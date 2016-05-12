@@ -55,16 +55,11 @@ public class DetectedActivitiesIntentService extends IntentService {
 
         //will undim screen if not walking, running or cyceling
         if(activity != null) {
-            switch (activity.getType()) {
-                case 1:
-                case 2:
-                case 3:
-                    //setMapToWalk();
-                default:
-                    //setMapToCycle();
+            if (activity.getType() > 3) {
+                setMapToCycle();
+            } else {
+                setMapToWalk();
             }
-        }else{
-            setMapToWalk();
         }
 
         // Broadcast the list of detected activities.
@@ -73,10 +68,12 @@ public class DetectedActivitiesIntentService extends IntentService {
     }
 
     public void setMapToWalk(){
+        Log.i("Updated activity"," You are now walking");
         Constants.walkOrCycle = 2;
 
     };
     public void setMapToCycle(){
+        Log.i("Updated activity"," You are now on bike");
         Constants.walkOrCycle = 4;
     };
 

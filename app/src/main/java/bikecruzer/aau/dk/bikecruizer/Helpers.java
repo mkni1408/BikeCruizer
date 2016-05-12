@@ -166,19 +166,15 @@ public class Helpers {
 
     public static float getCameraZoomLevel (){
 
-        if(Constants.walkOrCycle == 0){
-            return 18.0f;
-        }
-        else if(Constants.walkOrCycle == 2){
-            return 18.0f;
-
+        if(Constants.walkOrCycle == 0 ||Constants.walkOrCycle == 2 ){
+            return Constants.walkZoomLevel;
         }
         else if(Constants.walkOrCycle == 4){
-            return 20.0f;
+            return Constants.bikeZoomLevel;
 
         }
         else{
-            return 20.0f;
+            return Constants.bikeZoomLevel;
         }
     }
 
@@ -196,8 +192,11 @@ public class Helpers {
 
         LatLng latlng;
         if(Constants.fakeLocation){
+
+            map.setMyLocationEnabled(false);
             latlng = Constants.AA_MIDTBY;
         }else{
+            map.setMyLocationEnabled(true);
             if (l != null) {
                 latlng = new LatLng(l.getLatitude(),l.getLongitude());
 
@@ -214,6 +213,7 @@ public class Helpers {
         }
 
 
+        Constants.isMapBeingRedrawn = true;
 
         if(map != null) {
             //here we set the new camera position
@@ -237,6 +237,7 @@ public class Helpers {
                 }
             }
         }
+
     }
 
     public static void updateMap(Fragment f, int type, Location l){
@@ -257,9 +258,8 @@ public class Helpers {
         Main_Speedfragment frag = (Main_Speedfragment) f;
         //frag.updateLocation(l);
         if(frag != null) {
-            if(Constants.walkOrCycle > 2) {
+                Constants.isMapBeingRedrawn = true;
                 frag.drawMap(SpeedRoutes.getSpeedRoutes());
-            };
         }
 
     }
@@ -269,9 +269,8 @@ public class Helpers {
         Main_Volumefragment frag = (Main_Volumefragment) f;
         //frag.updateLocation(l);
         if(frag != null) {
-            if(Constants.walkOrCycle > 2) {
-                frag.drawMap(VolumeRoutes.getVolumeRoutes());
-            };
+            Constants.isMapBeingRedrawn = true;
+            frag.drawMap(VolumeRoutes.getVolumeRoutes());
         }
     }
 
@@ -280,9 +279,8 @@ public class Helpers {
         Main_POIfragment frag = (Main_POIfragment) f;
         //frag.updateLocation(l);
         if(frag != null) {
-            if(Constants.walkOrCycle > 2) {
-                frag.drawMap(POIs.getPois());
-            };
+            Constants.isMapBeingRedrawn = true;
+            frag.drawMap(POIs.getPois());
         }
     }
 
@@ -294,6 +292,8 @@ public class Helpers {
         //    Constants.currentMarker.setRotation(44);
         //    Log.i("old icon","used");
         //}catch (Exception e){
+
+        Constants.isMapBeingRedrawn = true;
         if(Constants.currentMarker != null) {
             Constants.currentMarker.remove();
         }
@@ -308,6 +308,8 @@ public class Helpers {
 
             Constants.currentMarker.setRotation(0);
         //}
+
+
     };
     public static void updateLocation(Activity a, LatLng location, GoogleMap map, boolean init){
         //do some version checking
@@ -317,42 +319,7 @@ public class Helpers {
                 return;
             }
         }
-        /*//set lat lng - if not set we set it to selma
-        Location l = LocationServices.FusedLocationApi.getLastLocation(
-                MainActivity.mGoogleApiClient);
 
-
-
-        LatLng latlng;
-
-        if (l != null) {
-            latlng = new LatLng(l.getLatitude(),l.getLongitude());
-        }else{
-            latlng = Constants.AA_MIDTBY;
-        }
-
-
-
-        if(!init || (init && !Constants.useMapCache) || (Constants.currentMarkerIcon != Constants.walkOrCycle)){
-            Log.i("Updating marker","initializing");
-            map.clear();
-            //add location pin
-            BitmapDescriptor iconDesc = Helpers.resolveIcon(a);
-            //add location pin
-            Constants.currentMarker = map.addMarker(new MarkerOptions()
-                    .position(latlng)
-                    .icon(iconDesc)
-                    .title("Marker"));
-            //update marker icon
-            Constants.currentMarkerIcon = Constants.walkOrCycle;
-        }
-        else{
-
-            if(!Constants.currentMarker.getPosition().equals(latlng)){
-                Log.i("Updating marker","um");
-                Constants.currentMarker.setPosition(latlng);
-            }
-        }*/
 
         return;
     }

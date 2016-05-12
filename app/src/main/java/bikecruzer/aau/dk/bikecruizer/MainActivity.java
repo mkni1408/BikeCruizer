@@ -13,6 +13,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -219,7 +220,10 @@ public class MainActivity extends AppCompatActivity
                 Constants.fakeLocation = true;
             }
 
-            Toast.makeText(this,Constants.fakeLocation ? "Fake location is on" : "Fake location is off", Toast.LENGTH_LONG).show();
+            Helpers.updateMap(Constants.currentFragment,Constants.currentFragmentIndex,
+                    null);
+
+            Toast.makeText(this,Constants.fakeLocation ? "Fake location is on" : "Fake location is off", Toast.LENGTH_SHORT).show();
         }
         else if(id == R.id.useMapTouch){
             if(Constants.useMapTouch){
@@ -438,7 +442,13 @@ public class MainActivity extends AppCompatActivity
                 NavigationHelper h = new NavigationHelper(InterestPoints.getInterestPoints());
                 NavigationResult result = h.getNavigationResult(new LatLng(location.getLatitude(), location.getLongitude()), Constants.navRadiusInMeters);
                 if (result != null) {
+                    Vibrator v = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
+                    // Vibrate for 500 milliseconds
+                    long[] pattern = new long[]{0, 100, 500, 100};
+                    v.vibrate(pattern , -1);
+
                     Toast.makeText(this, "You are close to: " + result.getmResult(), Toast.LENGTH_LONG).show();
+
                 }
             }
 
@@ -461,12 +471,6 @@ public class MainActivity extends AppCompatActivity
         public void onReceive(Context context, Intent intent) {
             ArrayList<DetectedActivity> updatedActivities =
                     intent.getParcelableArrayListExtra(Constants.ACTIVITY_EXTRA);
-            Toast.makeText(
-                    getApplicationContext(),
-                    Integer.toString(updatedActivities.size()),
-                    Toast.LENGTH_SHORT
-            ).show();
-            Log.i("Activity detected", Integer.toString(updatedActivities.size()));
         }
     }
 }

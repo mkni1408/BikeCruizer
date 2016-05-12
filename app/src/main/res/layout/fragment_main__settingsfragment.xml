@@ -12,45 +12,34 @@
         android:layout_height="match_parent"
         android:background="@color/wallet_dim_foreground_holo_dark">
 
-        <Switch
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Use map cache (force redraw)"
-            android:checked="false"
-            android:layout_margin="20dp"
-            android:id="@+id/mapCache" />
+            android:text="Walk zoom"
+            android:id="@+id/textView3"
+            android:layout_marginTop="80dp"/>
+        <SeekBar
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/seekBarwalk"
+            android:layout_marginTop="100dp"
+            android:progress="60"
+            android:secondaryProgress="60"/>
 
-        <RadioGroup
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_margin="20dp"
-            android:layout_gravity="center"
-            android:id="@+id/radioGroupSettings">
-
-            <RadioButton
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="Still"
-                android:checked="true"
-                android:id="@+id/radioButtonStill"
-                android:layout_gravity="center_horizontal" />
-
-            <RadioButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Walking"
-                android:id="@+id/radioButtonWalking"
-                android:layout_gravity="center_horizontal" />
-
-            <RadioButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Bicycling"
-                android:id="@+id/radioButtonCycling"
-                android:layout_gravity="center_horizontal" />
-
-        </RadioGroup>
-
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bike zoom"
+            android:id="@+id/textViewzoombicyckle"
+            android:layout_marginTop="20dp"/>
+        <SeekBar
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/seekBarbike"
+            android:layout_marginTop="40dp"
+            android:progress="40"
+            android:secondaryProgress="40"/>
 
 
     </FrameLayout>

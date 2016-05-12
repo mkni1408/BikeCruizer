@@ -55,39 +55,39 @@ public class SpeedRouteMapper extends AsyncTask<String,Void,SpeedRoute> {
     protected SpeedRoute doInBackground(String... index){
 
         RequestQueue mRequestQueue;
+        if(mainActivity != null) {
+            // Instantiate the cache
+            Cache cache = new DiskBasedCache(mainActivity.getCacheDir(), 1024 * 1024); // 1MB cap
+            // Set up the network to use HttpURLConnection as the HTTP client.
+            Network network = new BasicNetwork(new HurlStack());
+            // Instantiate the RequestQueue with the cache and network.
+            mRequestQueue = new RequestQueue(cache, network);
 
-        // Instantiate the cache
-        Cache cache = new DiskBasedCache(mainActivity.getCacheDir() , 1024 * 1024); // 1MB cap
-        // Set up the network to use HttpURLConnection as the HTTP client.
-        Network network = new BasicNetwork(new HurlStack());
-        // Instantiate the RequestQueue with the cache and network.
-        mRequestQueue = new RequestQueue(cache, network);
+            SpeedRoute v = speedRoute;
+            String url = makeRouteURL(v.getStartPosition().latitude, v.getStartPosition().longitude,
+                    v.getEndPosition().latitude, v.getEndPosition().longitude);
 
-        SpeedRoute v = speedRoute;
-        String url = makeRouteURL(v.getStartPosition().latitude, v.getStartPosition().longitude,
-                v.getEndPosition().latitude, v.getEndPosition().longitude);
+            // Formulate the request and handle the response.
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            // Do something with the response
+                            drawPath(response);
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            // Handle error
+                        }
+                    });
 
-        // Formulate the request and handle the response.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Do something with the response
-                        drawPath(response);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // Handle error
-                    }
-                });
-
-        // Add the request to the RequestQueue.
-        mRequestQueue.add(stringRequest);
-        // Start the queue
-        mRequestQueue.start();
-
+            // Add the request to the RequestQueue.
+            mRequestQueue.add(stringRequest);
+            // Start the queue
+            mRequestQueue.start();
+        }
         return null;
     }
 

@@ -219,27 +219,14 @@ public class Main_Speedfragment extends Fragment implements OnMapReadyCallback, 
 
     @Override
     public void onCameraChange(CameraPosition cameraPosition) {
-        Constants.startInteractionWithMap();
 
-        //LatLng latlng =  Constants.AA_MIDTBY;
-
-        /*if (l != null) {
-            latlng = new LatLng(l.getLatitude(),l.getLongitude());
-        }*/
+        if(!Constants.isMapBeingRedrawn) {
+            Constants.startInteractionWithMap();
+        }
 
 
-        //update location
-        //Helpers.updateLocation(this.getActivity(),latlng,this.map,this.mInitialized);
+        Constants.isMapBeingRedrawn = false;
 
-        //Double radius = Helpers.getRadius(this.map);
-
-        //if(!mInitialized) {
-        //    sgen.generateRoutes(latlng,radius,this.map,getActivity());
-        //}else if(mInitialized == true && Constants.useMapCache == false){
-        //    sgen.generateRoutes(latlng,radius,this.map,getActivity());
-        //}else{
-        //}
-        //this.drawMap(SpeedRoutes.getSpeedRoutes());
         mInitialized = true;
     }
 
@@ -256,12 +243,13 @@ public class Main_Speedfragment extends Fragment implements OnMapReadyCallback, 
     }
 
     public void drawMap (ArrayList<SpeedRoute> routes){
-
-        this.map.clear();
-        if(routes.size() > -1) {
-            this.excecuteRouteMapper(routes.size() - 1);
-        }else{
-            //progressSpinner.hide();
+        if(this.map != null) {
+            this.map.clear();
+            if (routes.size() > -1) {
+                this.excecuteRouteMapper(routes.size() - 1);
+            } else {
+                //progressSpinner.hide();
+            }
         }
     }
 

@@ -4,12 +4,15 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.renderscript.Float2;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.RadioGroup;
+import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -61,31 +64,45 @@ public class Main_Settingsfragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        RadioGroup rg = (RadioGroup) this.getActivity().findViewById(R.id.radioGroupSettings);
-        Switch s = (Switch) this.getActivity().findViewById(R.id.mapCache);
+        SeekBar sb1 = (SeekBar) this.getActivity().findViewById(R.id.seekBarwalk);
+        SeekBar sb2 = (SeekBar) this.getActivity().findViewById(R.id.seekBarbike);
 
-        rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        sb1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                if(i == R.id.radioButtonStill){
-                    Constants.walkOrCycle = 0;
-                }
-                else if (i == R.id.radioButtonWalking){
-                    Constants.walkOrCycle = 2;
-                }
-                else if (i == R.id.radioButtonCycling){
-                    Constants.walkOrCycle = 4;
-                }
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                int lev = 22/i;
+                Constants.walkZoomLevel = (22 / 100) * level;
+                Log.i("level", Integer.toString(lev));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
             }
         });
 
-        s.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
+        sb2.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                Toast.makeText(getActivity(),b?"true":"false",Toast.LENGTH_LONG).show();
-                Constants.useMapCache = b;
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                Constants.bikeZoomLevel = (22 / 100) * i;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
             }
         });
+
     }
 
     @Override

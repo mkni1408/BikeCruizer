@@ -50,13 +50,16 @@ public final class Constants {
     public static boolean isInteractingWithMap = true;
     public static ExecutorService excs = null;
     public static int navRadiusInMeters = 200; // meters
+    public static boolean isMapBeingRedrawn = false;
+    public static float walkZoomLevel = 16f;
+    public static float bikeZoomLevel = 18f;
     /**
      * The desired time between activity detections. Larger values result in fewer activity
      * detections while improving battery life. A value of 0 results in activity detections at the
      * fastest possible rate. Getting frequent updates negatively impact battery life and a real
      * app may prefer to request less frequent updates.
      */
-    public static final long DETECTION_INTERVAL_IN_MILLISECONDS = 10000;
+    public static final long DETECTION_INTERVAL_IN_MILLISECONDS = 15000;
 
     public static final long LOCATION_DETECTION_INTERVAL_IN_MILLISECONDS = 5000;
 

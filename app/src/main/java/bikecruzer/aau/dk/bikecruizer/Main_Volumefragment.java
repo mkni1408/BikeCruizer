@@ -216,7 +216,12 @@ public class Main_Volumefragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void onCameraChange(CameraPosition cameraPosition) {
-        Constants.startInteractionWithMap();
+        if(!Constants.isMapBeingRedrawn) {
+            Constants.startInteractionWithMap();
+        }
+
+
+        Constants.isMapBeingRedrawn = false;
         mInitialized = true;
     }
 

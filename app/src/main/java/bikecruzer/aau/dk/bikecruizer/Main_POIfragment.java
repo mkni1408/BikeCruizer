@@ -248,7 +248,11 @@ public class Main_POIfragment extends android.app.Fragment implements OnMapReady
     @Override
     public void onCameraChange(CameraPosition cameraPosition) {
 
-        Constants.startInteractionWithMap();
+        if(!Constants.isMapBeingRedrawn) {
+            Constants.startInteractionWithMap();
+        }
+
+        Constants.isMapBeingRedrawn = false;
         mInitialized = true;
     }
 
