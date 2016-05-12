@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/setWalk"
+        android:icon="@drawable/walk"
+        android:title="Set walk"/>
+    <item android:id="@+id/setBike"
+        android:icon="@drawable/bike"
+        android:title="Set bike" />
+    <item android:id="@+id/fakeLocation"
+        android:icon="@drawable/bike"
+        android:title="Fake location" />
+    <item android:id="@+id/useMapTouch"
+        android:icon="@drawable/bike"
+        android:title="Use map touch" />
+</menu>

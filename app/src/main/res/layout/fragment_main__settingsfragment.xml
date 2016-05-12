@@ -1,0 +1,58 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="bikecruzer.aau.dk.bikecruizer.Main_Settingsfragment"
+    android:tag="foobar"
+    android:id="@+id/settingsFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/wallet_dim_foreground_holo_dark">
+
+        <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Use map cache (force redraw)"
+            android:checked="false"
+            android:layout_margin="20dp"
+            android:id="@+id/mapCache" />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_margin="20dp"
+            android:layout_gravity="center"
+            android:id="@+id/radioGroupSettings">
+
+            <RadioButton
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Still"
+                android:checked="true"
+                android:id="@+id/radioButtonStill"
+                android:layout_gravity="center_horizontal" />
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Walking"
+                android:id="@+id/radioButtonWalking"
+                android:layout_gravity="center_horizontal" />
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Bicycling"
+                android:id="@+id/radioButtonCycling"
+                android:layout_gravity="center_horizontal" />
+
+        </RadioGroup>
+
+
+
+    </FrameLayout>
+
+</FrameLayout>

@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_id": "even-impulse-128111",
+    "project_number": "358919268169",
+    "name": "BikeCruizer"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:358919268169:android:8d42c948c8a65905",
+        "client_id": "android:bikecruzer.aau.dk.bikecruizer",
+        "client_type": 1,
+        "android_client_info": {
+          "package_name": "bikecruzer.aau.dk.bikecruizer",
+          "certificate_hash": []
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "358919268169-f4coe7fa3n0fuv6sm33nua9dnu6vqle4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "bikecruzer.aau.dk.bikecruizer",
+            "certificate_hash": "E9A58E65B53EFD3CC7A6563FA6E7F8F8E0F2AE02"
+          }
+        },
+        {
+          "client_id": "358919268169-fq51rloc8uma4r7k7tj0cf8977ln8c26.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "cloud_messaging_service": {
+          "status": 1,
+          "apns_config": []
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "google_signin_service": {
+          "status": 2
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "client_info": [],
+  "ARTIFACT_VERSION": "1"
+}
