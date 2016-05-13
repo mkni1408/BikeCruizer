@@ -4,11 +4,13 @@ import android.content.Intent;
 
 import com.google.android.gms.drive.internal.StringListResponse;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.maps.android.clustering.ClusterItem;
+
 
 /**
  * Created by michael on 17/04/16.
  */
-public class POI {
+public class POI implements ClusterItem {
     private LatLng position;
     private String name;
     private Integer numOfPOI;

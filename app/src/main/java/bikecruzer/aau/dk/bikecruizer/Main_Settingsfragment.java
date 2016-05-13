@@ -70,9 +70,6 @@ public class Main_Settingsfragment extends Fragment {
         sb1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                int lev = 22/i;
-                Constants.walkZoomLevel = (22 / 100) * level;
-                Log.i("level", Integer.toString(lev));
             }
 
             @Override
@@ -89,7 +86,6 @@ public class Main_Settingsfragment extends Fragment {
         sb2.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                Constants.bikeZoomLevel = (22 / 100) * i;
             }
 
             @Override

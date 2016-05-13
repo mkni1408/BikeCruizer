@@ -4,9 +4,13 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.graphics.drawable.Icon;
 import android.location.Geocoder;
 import android.location.Location;
@@ -44,6 +48,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.maps.android.clustering.Cluster;
+import com.google.maps.android.clustering.ClusterItem;
+import com.google.maps.android.clustering.ClusterManager;
+import com.google.maps.android.clustering.view.DefaultClusterRenderer;
+
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -59,15 +69,12 @@ import java.util.Locale;
  * Use the {@link Main_POIfragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Main_POIfragment extends android.app.Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraChangeListener{
+public class Main_POIfragment extends android.app.Fragment implements OnMapReadyCallback, GoogleMap.OnCameraChangeListener {
     // TODO: Rename parameter arguments, choose names that match
-    private ProgressBar spinner;
     private OnFragmentInteractionListener mListener;
-    //private ArrayList<POI> positionArray = new ArrayList<POI>();
     public GoogleMap map = null;
-    //private POIGenerator poig = null;
-    //private ProgressDialog progressSpinner = null;
     private boolean mInitialized = false;
+    private ClusterManager<POI> mClusterManager;
 
     public Main_POIfragment() {
         // Required empty public constructor
@@ -88,6 +95,8 @@ public class Main_POIfragment extends android.app.Fragment implements OnMapReady
         fragment.setArguments(args);
         return fragment;
     }
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -220,7 +229,7 @@ public class Main_POIfragment extends android.app.Fragment implements OnMapReady
 
 
         //listener to listen on markers
-        googleMap.setOnMarkerClickListener(this);
+        //googleMap.setOnMarkerClickListener(this);
         googleMap.setOnCameraChangeListener(this);
 
         //IPFetcher fetcher = new IPFetcher();
@@ -235,13 +244,6 @@ public class Main_POIfragment extends android.app.Fragment implements OnMapReady
         Helpers.updateLocation(this.getActivity(),new LatLng(location.latitude,location.longitude),this.map,this.mInitialized);
 
         mInitialized = true;
-    }
-
-    @Override
-    public boolean onMarkerClick(Marker marker) {
-        Toast t = Toast.makeText(getActivity(),marker.getTitle(),Toast.LENGTH_LONG);
-        t.show();
-        return false;
     }
 
 
@@ -265,9 +267,9 @@ public class Main_POIfragment extends android.app.Fragment implements OnMapReady
             //progressSpinner.hide();
         }
         if(Constants.walkOrCycle > 2) {
-            InterestPoints.drawIPstoMap(this.getActivity(), this.map);
+            //InterestPoints.drawIPstoMap(this.getActivity(), this.map);
         }
-        Helpers.setCameraZoomAndCenter(this.getActivity(), this.map, null);
+        //Helpers.setCameraZoomAndCenter(this.getActivity(), this.map, null);
     }
 
     public void addPointsToMap (ArrayList<POI> points){
@@ -275,24 +277,35 @@ public class Main_POIfragment extends android.app.Fragment implements OnMapReady
         //get and scale icon
         Log.i("Points to draw", Integer.toString(points.size()));
 
-        for (int i = 0 ; i < points.size(); i++) {
-            //get and scale icon
-            /*icon = BitmapFactory.decodeResource(this.activity.getResources(),
-                    R.drawable.bullseye);
-            scaledIcon = Bitmap.createScaledBitmap(icon, 10 * this.points.get(i).getNumPOI(), 10 * this.points.get(i).getNumPOI(), false);
-            iconDesc = BitmapDescriptorFactory.fromBitmap(scaledIcon);*/
-            this.map.addCircle(new CircleOptions()
+        mClusterManager = new ClusterManager<POI>(this.getActivity(), map);
+        mClusterManager.setRenderer(new CustomRenderer<POI>(this.getActivity(), map, mClusterManager));
+
+        map.setOnCameraChangeListener(mClusterManager);
+        map.setOnMarkerClickListener(mClusterManager);
+        mClusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<POI>() {
+            @Override
+            public boolean onClusterClick(Cluster<POI> cluster) {
+                String firstName = cluster.getItems().iterator().next().getName();
+                Toast.makeText(getActivity(), cluster.getSize() + " (including " + firstName + ")", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+
+        mClusterManager.addItems(points);
+
+
+
+        //for (int i = 0 ; i < points.size(); i++) {
+
+
+            /*this.map.addCircle(new CircleOptions()
                     .center(points.get(i).getPosition())
                     .radius(points.get(i).getNumPOI())
                     .strokeColor(Color.TRANSPARENT)
                     .fillColor(0x55ffb3ec)
-                    .strokeWidth(5));
+                    .strokeWidth(5));*/
 
-            /*this.map.addMarker(new MarkerOptions()
-                    .position(this.points.get(i).getPosition())
-                    .title(this.points.get(i).getName())
-                    .icon(iconDesc));*/
-        }
+            //}
 
         //IPFetcher fetcher = new IPFetcher();
         //fetcher.fetch(this.map,this.activity);
@@ -300,6 +313,7 @@ public class Main_POIfragment extends android.app.Fragment implements OnMapReady
         //this.progressSpinner.hide();
 
     }
+
 
     /**
      * This interface must be implemented by activities that contain this
@@ -316,6 +330,19 @@ public class Main_POIfragment extends android.app.Fragment implements OnMapReady
         void onPOIFragmentInteraction(Uri uri);
     }
 
+
+    class CustomRenderer<T extends ClusterItem> extends DefaultClusterRenderer<T>
+    {
+        public CustomRenderer(Context context, GoogleMap map, ClusterManager<T> clusterManager) {
+            super(context, map, clusterManager);
+        }
+
+        @Override
+        protected boolean shouldRenderAsCluster(Cluster<T> cluster) {
+            //start clustering if at least 2 items overlap
+            return cluster.getSize() > 1;
+        }
+    }
 
 }
 
