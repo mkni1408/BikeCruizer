@@ -1,29 +1,27 @@
 package bikecruzer.aau.dk.bikecruizer;
 
 import android.Manifest;
+import android.app.Dialog;
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Typeface;
-import android.graphics.drawable.Icon;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
+import android.view.ViewOverlay;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -41,6 +39,8 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.GroundOverlay;
+import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -56,10 +56,13 @@ import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import bikecruzer.aau.dk.bikecruizer.Adapters.PoiOverlayAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -69,7 +72,7 @@ import java.util.Locale;
  * Use the {@link Main_POIfragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Main_POIfragment extends android.app.Fragment implements OnMapReadyCallback, GoogleMap.OnCameraChangeListener {
+public class Main_POIfragment extends android.app.Fragment implements OnMapReadyCallback {
     // TODO: Rename parameter arguments, choose names that match
     private OnFragmentInteractionListener mListener;
     public GoogleMap map = null;
@@ -230,7 +233,7 @@ public class Main_POIfragment extends android.app.Fragment implements OnMapReady
 
         //listener to listen on markers
         //googleMap.setOnMarkerClickListener(this);
-        googleMap.setOnCameraChangeListener(this);
+        //googleMap.setOnCameraChangeListener(this);
 
         //IPFetcher fetcher = new IPFetcher();
         //fetcher.fetch(this.map,this.getActivity());
@@ -247,7 +250,7 @@ public class Main_POIfragment extends android.app.Fragment implements OnMapReady
     }
 
 
-    @Override
+    /*@Override
     public void onCameraChange(CameraPosition cameraPosition) {
 
         if(!Constants.isMapBeingRedrawn) {
@@ -256,7 +259,7 @@ public class Main_POIfragment extends android.app.Fragment implements OnMapReady
 
         Constants.isMapBeingRedrawn = false;
         mInitialized = true;
-    }
+    }*/
 
     public void drawMap (ArrayList<POI> points){
 
@@ -278,15 +281,59 @@ public class Main_POIfragment extends android.app.Fragment implements OnMapReady
         Log.i("Points to draw", Integer.toString(points.size()));
 
         mClusterManager = new ClusterManager<POI>(this.getActivity(), map);
-        mClusterManager.setRenderer(new CustomRenderer<POI>(this.getActivity(), map, mClusterManager));
+        mClusterManager.setRenderer(new CustomRenderer(this.getActivity(), map, mClusterManager));
 
         map.setOnCameraChangeListener(mClusterManager);
         map.setOnMarkerClickListener(mClusterManager);
         mClusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<POI>() {
             @Override
             public boolean onClusterClick(Cluster<POI> cluster) {
-                String firstName = cluster.getItems().iterator().next().getName();
-                Toast.makeText(getActivity(), cluster.getSize() + " (including " + firstName + ")", Toast.LENGTH_SHORT).show();
+                //sString firstName = cluster.getItems().iterator().next().getName();
+                //Toast.makeText(getActivity(), cluster.getSize() + " (including " + firstName + ")", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+
+       /* map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+              *//* LayoutInflater layoutInflater = LayoutInflater.from( getActivity() );
+                ViewGroup root = (ViewGroup) getActivity().findViewById(R.id.nav_view);
+                FrameLayout f = ( FrameLayout )layoutInflater.inflate( R.layout.poi_overlay, root,
+                        false );
+
+                root.getOverlay().add(f);*//*
+                Dialog myDialog;
+                myDialog =  new Dialog(getActivity());
+                myDialog.setContentView(R.layout.poi_overlay);
+                myDialog.setCancelable(true);
+                myDialog.show();
+                return false;
+            }
+        });*/
+
+        /*map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+            @Override
+            public void onCameraChange(CameraPosition cameraPosition) {
+
+                return;
+            }
+        });*/
+
+        mClusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<POI>() {
+            @Override
+            public boolean onClusterItemClick(POI poi) {
+                Dialog myDialog;
+                myDialog =  new Dialog(getActivity());
+                myDialog.setContentView(R.layout.poi_overlay);
+                myDialog.setCancelable(true);
+                myDialog.setTitle(R.string.point_of_interest_ratings);
+
+                ListView v = (ListView) myDialog.findViewById(R.id.ratingsListView);
+                v.setAdapter(new PoiOverlayAdapter(getActivity(),poi.getRatings().getRatingsArray()));
+
+
+                myDialog.show();
                 return false;
             }
         });
@@ -315,6 +362,32 @@ public class Main_POIfragment extends android.app.Fragment implements OnMapReady
     }
 
 
+    private GroundOverlay addcircleAroundMarker(int size, double lat, double lng) {
+        // circle settings
+        int radiusM = size;
+        double latitude = lat;
+        double longitude = lng;
+        LatLng latLng = new LatLng(latitude,longitude);
+
+        // draw circle
+        // diameter
+        int d = 500;
+        Bitmap bm = Bitmap.createBitmap(d, d, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(bm);
+        Paint p = new Paint();
+        p.setColor(0x55ffb3ec);
+        c.drawCircle(d/2, d/2, d/2, p);
+
+        BitmapDescriptor bmD = BitmapDescriptorFactory.fromBitmap(bm);
+
+        return map.addGroundOverlay(new GroundOverlayOptions().
+                image(bmD).
+                position(latLng,radiusM*2,radiusM*2).
+                transparency(0.4f));
+    }
+
+
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -331,17 +404,54 @@ public class Main_POIfragment extends android.app.Fragment implements OnMapReady
     }
 
 
-    class CustomRenderer<T extends ClusterItem> extends DefaultClusterRenderer<T>
+    class CustomRenderer extends DefaultClusterRenderer<POI>
     {
-        public CustomRenderer(Context context, GoogleMap map, ClusterManager<T> clusterManager) {
+        public CustomRenderer(Context context, GoogleMap map, ClusterManager<POI> clusterManager) {
             super(context, map, clusterManager);
         }
 
+
+
+        protected void onBeforeClusterItemRendered(POI item, MarkerOptions markerOptions) {
+
+
+            /*Log.i("zoom",Float.toString(map.getCameraPosition().zoom));
+            float zoom = map.getCameraPosition().zoom;
+            int size = (int)zoom * 7;
+
+            Bitmap mDotMarkerBitmap = Bitmap.createBitmap(size,size, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(mDotMarkerBitmap);
+            Drawable shape = getResources().getDrawable(R.drawable.poicircle);
+            shape.setBounds(0, 0, size, size);
+            shape.draw(canvas);*/
+
+            //markerOptions.icon(BitmapDescriptorFactory.fromBitmap(mDotMarkerBitmap));
+            markerOptions.title(item.getName());
+            super.onBeforeClusterItemRendered(item, markerOptions);
+            item.setOverlay(addcircleAroundMarker(item.getNumPOI(), item.getPosition().latitude, item.getPosition().longitude));
+        }
+
+        protected void onBeforeClusterRendered(Cluster<POI> cluster, MarkerOptions m){
+
+            for (POI elem : cluster.getItems()) {
+                if(elem.getOverlay() != null){
+                    elem.getOverlay().remove();
+                    elem.setOverlay(null);
+                }
+            }
+
+
+            super.onBeforeClusterRendered(cluster, m);
+        }
+
+
+
         @Override
-        protected boolean shouldRenderAsCluster(Cluster<T> cluster) {
+        protected boolean shouldRenderAsCluster(Cluster<POI> cluster) {
             //start clustering if at least 2 items overlap
             return cluster.getSize() > 1;
         }
+
     }
 
 }

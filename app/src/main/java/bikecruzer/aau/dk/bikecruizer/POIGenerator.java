@@ -79,16 +79,24 @@ public class POIGenerator extends AsyncTask<String,Void,ArrayList<POI>> {
             {
                 try {
                     JSONObject oneObject = jArray.getJSONObject(i);
+
+                    JSONObject jsonArr = oneObject.getJSONObject("ratings");
+
+                    POIRatings ratings = new POIRatings(jsonArr.getInt("dining"),jsonArr.getInt("barsandpubs"),
+                            jsonArr.getInt("attractions"),jsonArr.getInt("sights"),jsonArr.getInt("museums"), jsonArr.getInt("kids"));
+
                     // Pulling items from the array
                     POI newPoi = new POI(oneObject.getString("name"),
                             oneObject.getDouble("lat"),
                             oneObject.getDouble("lng"),
-                            oneObject.getInt("size") * 10
+                            oneObject.getInt("size") * 10,
+                            ratings
                             );
                     points.add(newPoi);
 
                 } catch (JSONException e) {
                     // Oops
+                    Log.e(e.getMessage(),e.getLocalizedMessage());
                 }
             }
 
@@ -96,6 +104,7 @@ public class POIGenerator extends AsyncTask<String,Void,ArrayList<POI>> {
 
         } catch (Exception e) {
             this.exception = e;
+            Log.e(e.getMessage(),e.getLocalizedMessage());
             return null;
         }
     }
