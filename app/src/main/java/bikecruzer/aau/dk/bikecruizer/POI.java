@@ -18,6 +18,7 @@ public class POI implements ClusterItem {
     private Integer numOfPOI;
     private GroundOverlay overlay;
     private POIRatings ratings = null;
+    private boolean isInThisPOI = false;
 
     public POI (){
         position = null;
@@ -73,5 +74,9 @@ public class POI implements ClusterItem {
 
     public POIRatings getRatings (){
         return ratings;
+    }
+    public boolean getInThisPOI(){return  isInThisPOI;};
+    public void setInThisPOI(boolean isIn){
+        this.isInThisPOI = isIn;
     }
 }

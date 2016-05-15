@@ -1,6 +1,8 @@
 package bikecruzer.aau.dk.bikecruizer;
 
 import android.Manifest;
+import android.app.ActionBar;
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -10,13 +12,16 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -26,6 +31,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,6 +75,7 @@ public class MainActivity extends AppCompatActivity
 
     public static GoogleApiClient mGoogleApiClient;
     public static Location mLastLocation;
+    public static Activity mActivity;
     protected static final String TAG = "MainActivity";
     protected ActivityDetectionBroadcastReceiver mBroadcastReceiver;
     private ArrayList<DetectedActivity> mDetectedActivities;
@@ -79,6 +87,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
 
         // Get a receiver for broadcasts from ActivityDetectionIntentService.
@@ -121,7 +130,28 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
+        //will set window to fullscreen
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        mActivity = this;
 
+    }
+
+    public static void showBikeOverlay(boolean show){
+        if(!Constants.useMapTouch) {
+            LinearLayout l = (LinearLayout) mActivity.findViewById(R.id.navigationOverlay);
+            l.setVisibility(show ? View.VISIBLE : View.GONE);
+
+            if (show) {
+                l.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+                        view.setVisibility(View.GONE);
+                        Constants.walkOrCycle = 2;
+                        return false;
+                    }
+                });
+            }
+        }
     }
 
     public void setContentView(){
@@ -202,11 +232,18 @@ public class MainActivity extends AppCompatActivity
             tv.setText("Walk mode");
             Helpers.updateMap(Constants.currentFragment,Constants.currentFragmentIndex,
                     null);
+
+            showBikeOverlay(false);
+
         }else if(id == R.id.setBike){
             Constants.walkOrCycle = 4;
             tv.setText("Bike mode");
             Helpers.updateMap(Constants.currentFragment,Constants.currentFragmentIndex,
                     null);
+
+            showBikeOverlay(true);
+
+
 
         }
         else if(id == R.id.fakeLocation){
@@ -393,6 +430,7 @@ public class MainActivity extends AppCompatActivity
     private PendingIntent getActivityDetectionPendingIntent() {
         Intent intent = new Intent(this, DetectedActivitiesIntentService.class);
 
+
         // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling
         // requestActivityUpdates() and removeActivityUpdates().
         return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -435,21 +473,27 @@ public class MainActivity extends AppCompatActivity
 
         if(!Constants.isInteractingWithMap) {
             if(Constants.walkOrCycle > 2) {
-                NavigationHelper h = new NavigationHelper(InterestPoints.getInterestPoints());
+                NavigationHelper h = new NavigationHelper(POIs.getPois());
                 NavigationResult result = h.getNavigationResult(new LatLng(location.getLatitude(), location.getLongitude()), Constants.navRadiusInMeters);
                 if (result != null) {
-                    Vibrator v = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
+                    //Vibrator v = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
                     // Vibrate for 500 milliseconds
-                    long[] pattern = new long[]{0, 100, 500, 100};
-                    v.vibrate(pattern , -1);
+                    /*long[] pattern = new long[]{0, 100, 500, 100};
+                    v.vibrate(pattern , -1);*/
+                    Toast.makeText(this,result.getmResult(),Toast.LENGTH_SHORT).show();
+                    final MediaPlayer mp = MediaPlayer.create(this, R.raw.ding);
+                    mp.start();
+                }
 
-                    Toast.makeText(this, "You are close to: " + result.getmResult(), Toast.LENGTH_LONG).show();
-
+                for (int i = 0; i < POIs.getPois().size(); i++) {
+                    if(POIs.getPois().get(i).getInThisPOI()){
+                        Log.i("POI IN", POIs.getPois().get(i).getName());
+                    }
                 }
             }
 
-            Helpers.updateMap(Constants.currentFragment, Constants.currentFragmentIndex,
-                    location);
+            //Helpers.updateMap(Constants.currentFragment, Constants.currentFragmentIndex,
+            //        location);
         }
 
     }

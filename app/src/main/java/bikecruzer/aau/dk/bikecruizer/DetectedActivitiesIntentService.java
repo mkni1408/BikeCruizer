@@ -1,10 +1,13 @@
 package bikecruzer.aau.dk.bikecruizer;
 
+import android.app.Activity;
 import android.app.IntentService;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
@@ -21,6 +24,7 @@ import bikecruzer.aau.dk.bikecruizer.Constants;
 public class DetectedActivitiesIntentService extends IntentService {
 
     protected static final String TAG = "DetectedActivitiesIS";
+    protected static Activity mActivity = null;
 
     /**
      * This constructor is required, and calls the super IntentService(String)
@@ -56,9 +60,9 @@ public class DetectedActivitiesIntentService extends IntentService {
         //will undim screen if not walking, running or cyceling
         if(activity != null) {
             if (activity.getType() > 3) {
-                setMapToCycle();
+                //setMapToCycle();
             } else {
-                setMapToWalk();
+                //setMapToWalk();
             }
         }
 
@@ -70,7 +74,6 @@ public class DetectedActivitiesIntentService extends IntentService {
     public void setMapToWalk(){
         Log.i("Updated activity"," You are now walking");
         Constants.walkOrCycle = 2;
-
     };
     public void setMapToCycle(){
         Log.i("Updated activity"," You are now on bike");

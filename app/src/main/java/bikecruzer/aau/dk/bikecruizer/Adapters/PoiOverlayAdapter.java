@@ -32,17 +32,20 @@ public class PoiOverlayAdapter extends ArrayAdapter<Integer> {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.poi_overlay_item, parent, false);
         LinearLayout textView = (LinearLayout) rowView.findViewById(R.id.ratingsIcons);
+        ImageView ratingImage = (ImageView) rowView.findViewById(R.id.rating_main_icon);
         //ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
         //textView.setText(Integer.toString(values[position]));
-        int[] ids = new int[] {R.id.icon2,R.id.icon3,R.id.icon4, R.id.icon5, R.id.icon6};
+        int[] staricon_ids = new int[] {R.id.icon2,R.id.icon3,R.id.icon4, R.id.icon5, R.id.icon6};
+        int[] idss = new int[] {R.drawable.ratings_shopping,R.drawable.ratings_bars,R.drawable.ratings_bars,
+                R.drawable.ratings_food, R.drawable.ratings_nature,R.drawable.ratings_nature};
 
         Log.i("value", Integer.toString(position));
 
         for (int i = 0; i < values[position]; i++){
-            ImageView v = (ImageView) textView.findViewById(ids[i]);
+            ImageView v = (ImageView) textView.findViewById(staricon_ids[i]);
             v.setImageResource(R.drawable.favourites);
         }
-
+        ratingImage.setImageResource(idss[position]);
         // change the icon for Windows and iPhone
         return rowView;
     }

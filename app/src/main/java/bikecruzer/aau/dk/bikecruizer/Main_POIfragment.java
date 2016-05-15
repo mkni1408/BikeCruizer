@@ -18,49 +18,25 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewOverlay;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.drive.Drive;
-import com.google.android.gms.identity.intents.Address;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.maps.android.clustering.Cluster;
-import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 
-import org.json.JSONException;
-
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 import bikecruzer.aau.dk.bikecruizer.Adapters.PoiOverlayAdapter;
 
@@ -189,9 +165,13 @@ public class Main_POIfragment extends android.app.Fragment implements OnMapReady
         if (l != null) {
             latlng = new LatLng(l.getLatitude(),l.getLongitude());
         }else{
-            latlng = Constants.AA_MIDTBY;
+            latlng = Constants.FAKELOCATION;
         }
 
+
+        Helpers.setCameraZoomAndCenter(this.getActivity(),map,l,mInitialized);
+
+        mInitialized = true;
         googleMap.setMyLocationEnabled(true);
 
         googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
@@ -210,9 +190,9 @@ public class Main_POIfragment extends android.app.Fragment implements OnMapReady
                 if (l != null) {
                     latlng = new LatLng(l.getLatitude(),l.getLongitude());
                 }else{
-                    latlng = Constants.AA_MIDTBY;
+                    latlng = Constants.FAKELOCATION;
                 }
-                Helpers.setCameraZoomAndCenter(getActivity(), map, l);
+                Helpers.setCameraZoomAndCenter(getActivity(), map, l, mInitialized);
                 return true;
             }
         });
@@ -221,15 +201,14 @@ public class Main_POIfragment extends android.app.Fragment implements OnMapReady
             @Override
             public void onMapClick(LatLng latLng) {
                 if(Constants.useMapTouch){
-                    Constants.AA_MIDTBY = latLng;
-                    Helpers.setCameraZoomAndCenter(getActivity(), map, null);
+                    Constants.FAKELOCATION = latLng;
+                    Helpers.setCameraZoomAndCenter(getActivity(), map, null, mInitialized);
                 }
             }
         });
 
         //set zoomlevel
-        Helpers.setCameraZoomAndCenter(this.getActivity(), map, l);
-
+        Helpers.setCameraZoomAndCenter(this.getActivity(), map, l, mInitialized);
 
         //listener to listen on markers
         //googleMap.setOnMarkerClickListener(this);
@@ -263,7 +242,7 @@ public class Main_POIfragment extends android.app.Fragment implements OnMapReady
 
     public void drawMap (ArrayList<POI> points){
 
-        this.map.clear();
+        //this.map.clear();
         if(points.size() > -1) {
             this.addPointsToMap(points);
         }else{
@@ -294,15 +273,15 @@ public class Main_POIfragment extends android.app.Fragment implements OnMapReady
             }
         });
 
-       /* map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+       /*map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-              *//* LayoutInflater layoutInflater = LayoutInflater.from( getActivity() );
+                LayoutInflater layoutInflater = LayoutInflater.from( getActivity() );
                 ViewGroup root = (ViewGroup) getActivity().findViewById(R.id.nav_view);
                 FrameLayout f = ( FrameLayout )layoutInflater.inflate( R.layout.poi_overlay, root,
                         false );
 
-                root.getOverlay().add(f);*//*
+                root.getOverlay().add(f);
                 Dialog myDialog;
                 myDialog =  new Dialog(getActivity());
                 myDialog.setContentView(R.layout.poi_overlay);
@@ -339,26 +318,6 @@ public class Main_POIfragment extends android.app.Fragment implements OnMapReady
         });
 
         mClusterManager.addItems(points);
-
-
-
-        //for (int i = 0 ; i < points.size(); i++) {
-
-
-            /*this.map.addCircle(new CircleOptions()
-                    .center(points.get(i).getPosition())
-                    .radius(points.get(i).getNumPOI())
-                    .strokeColor(Color.TRANSPARENT)
-                    .fillColor(0x55ffb3ec)
-                    .strokeWidth(5));*/
-
-            //}
-
-        //IPFetcher fetcher = new IPFetcher();
-        //fetcher.fetch(this.map,this.activity);
-
-        //this.progressSpinner.hide();
-
     }
 
 
@@ -413,19 +372,6 @@ public class Main_POIfragment extends android.app.Fragment implements OnMapReady
 
 
         protected void onBeforeClusterItemRendered(POI item, MarkerOptions markerOptions) {
-
-
-            /*Log.i("zoom",Float.toString(map.getCameraPosition().zoom));
-            float zoom = map.getCameraPosition().zoom;
-            int size = (int)zoom * 7;
-
-            Bitmap mDotMarkerBitmap = Bitmap.createBitmap(size,size, Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(mDotMarkerBitmap);
-            Drawable shape = getResources().getDrawable(R.drawable.poicircle);
-            shape.setBounds(0, 0, size, size);
-            shape.draw(canvas);*/
-
-            //markerOptions.icon(BitmapDescriptorFactory.fromBitmap(mDotMarkerBitmap));
             markerOptions.title(item.getName());
             super.onBeforeClusterItemRendered(item, markerOptions);
             item.setOverlay(addcircleAroundMarker(item.getNumPOI(), item.getPosition().latitude, item.getPosition().longitude));
@@ -449,7 +395,7 @@ public class Main_POIfragment extends android.app.Fragment implements OnMapReady
         @Override
         protected boolean shouldRenderAsCluster(Cluster<POI> cluster) {
             //start clustering if at least 2 items overlap
-            return cluster.getSize() > 1;
+            return cluster.getSize() > 2;
         }
 
     }

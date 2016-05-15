@@ -42,5 +42,20 @@
             android:id="@+id/bikevswalktextview" />
     </android.support.design.widget.NavigationView>
 
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:id="@+id/navigationOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#98000000"
+        android:visibility="gone">
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/bike"
+            android:layout_gravity="center_horizontal|center_vertical"/>
+    </LinearLayout>
+
 
 </android.support.v4.widget.DrawerLayout>

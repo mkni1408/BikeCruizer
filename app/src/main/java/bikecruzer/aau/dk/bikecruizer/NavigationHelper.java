@@ -12,37 +12,50 @@ import java.util.ArrayList;
 public class NavigationHelper {
 
     private ArrayList<InterestPoint> mIpList = null;
+    private ArrayList<POI> mPOIList = null;
 
-    public NavigationHelper(ArrayList<InterestPoint> ipList){
-        this.mIpList = ipList;
+    public NavigationHelper(ArrayList<POI> poiList){
+        //remember to init the list if null!!!
+        this.mPOIList = poiList;
     }
+
 
     //gets a navigationResult (if Any) from a list of interestpoints
     //radius: radius within where it should look
     public NavigationResult getNavigationResult(LatLng currentLocation, int radius){
         if(Constants.fakeLocation){
-            currentLocation = Constants.AA_MIDTBY;
+            currentLocation = Constants.FAKELOCATION;
         }
 
         double dist = 0.0;
         int index = 0;
-        if(this.mIpList.size() > -1) {
-            for (int i = 0; i < mIpList.size(); i++) {
-                double newdist = distance(currentLocation.latitude, currentLocation.longitude, mIpList.get(i).getLatitude(), mIpList.get(i).getLongitude());
-                if(dist == 0){
+        if(this.mPOIList.size() > -1) {
+            for (int i = 0; i < POIs.getPois().size(); i++) {
+                double newdist = distance(currentLocation.latitude, currentLocation.longitude, POIs.getPois().get(i).getPosition().latitude, POIs.getPois().get(i).getPosition().longitude) - ((POIs.getPois().get(i).getNumPOI() / 10) * 10) ;
+
+
+                Log.i("found",Double.toString(newdist));
+                //if distance is below zero and we are not already in this POI
+                if(newdist < 1 && !POIs.getPois().get(i).getInThisPOI()){
+                    POIs.getPois().get(i).setInThisPOI(true);
                     dist = newdist;
                     index = i;
+                    return new NavigationResult(POIs.getPois().get(index).getName());
                 }
-                else if(newdist < dist){
-                    dist = newdist;
-                    index = i;
+                //if we are leaving a poi and
+                if(newdist > 1 && POIs.getPois().get(i).getInThisPOI()){
+                    POIs.getPois().get(i).setInThisPOI(false);
                 }
+
+//                else if(newdist < dist){
+//                    dist = newdist;
+//                    index = i;
+//                }
+//                Log.i("newDist",Double.toString(newdist));
             }
-            if(dist > radius){
-                return null;
-            }else{
-                return new NavigationResult(mIpList.get(index).getName());
-            }
+            return null;
+
+
         }
 
 

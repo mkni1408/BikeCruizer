@@ -12,6 +12,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
+import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -26,7 +27,7 @@ public final class Constants {
 
     public static final String PACKAGE_NAME = "com.google.android.gms.location.activityrecognition";
 
-    public static LatLng AA_MIDTBY = new LatLng(57.047879, 9.924348);
+    public static LatLng FAKELOCATION = new LatLng(57.047879, 9.924348);
 
     public static final String BROADCAST_ACTION = PACKAGE_NAME + ".BROADCAST_ACTION";
 

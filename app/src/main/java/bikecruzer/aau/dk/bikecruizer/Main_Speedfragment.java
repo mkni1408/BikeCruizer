@@ -120,7 +120,7 @@ public class Main_Speedfragment extends Fragment implements OnMapReadyCallback, 
         if (l != null) {
             latlng = new LatLng(l.getLatitude(),l.getLongitude());
         }else{
-            latlng = Constants.AA_MIDTBY;
+            latlng = Constants.FAKELOCATION;
         }
 
         googleMap.setMyLocationEnabled(true);
@@ -141,9 +141,9 @@ public class Main_Speedfragment extends Fragment implements OnMapReadyCallback, 
                 if (l != null) {
                     latlng = new LatLng(l.getLatitude(),l.getLongitude());
                 }else{
-                    latlng = Constants.AA_MIDTBY;
+                    latlng = Constants.FAKELOCATION;
                 }
-                Helpers.setCameraZoomAndCenter(getActivity(), map, l);
+                Helpers.setCameraZoomAndCenter(getActivity(), map, l, false);
                 return true;
             }
         });
@@ -152,13 +152,13 @@ public class Main_Speedfragment extends Fragment implements OnMapReadyCallback, 
             @Override
             public void onMapClick(LatLng latLng) {
                 if(Constants.useMapTouch){
-                    Constants.AA_MIDTBY = latLng;
-                    Helpers.setCameraZoomAndCenter(getActivity(), map, null);
+                    Constants.FAKELOCATION = latLng;
+                    Helpers.setCameraZoomAndCenter(getActivity(), map, null, false);
                 }
             }
         });
         //set zoomlevel
-        Helpers.setCameraZoomAndCenter(this.getActivity(), map, l);
+        Helpers.setCameraZoomAndCenter(this.getActivity(), map, l, false);
 
 
         //listener to listen on markers
@@ -260,7 +260,7 @@ public class Main_Speedfragment extends Fragment implements OnMapReadyCallback, 
             if(Constants.walkOrCycle > 2) {
                 InterestPoints.drawIPstoMap(this.getActivity(), this.map);
             }
-            Helpers.setCameraZoomAndCenter(this.getActivity(), this.map, null);
+            Helpers.setCameraZoomAndCenter(this.getActivity(), this.map, null, false);
         }else {
             SpeedRouteMapper rm = new SpeedRouteMapper(SpeedRoutes.getSpeedRoutes().get(counter), this.getActivity(), map, counter, this);
             rm.execute();

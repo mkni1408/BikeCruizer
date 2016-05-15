@@ -178,7 +178,7 @@ public class Helpers {
         }
     }
 
-    public static void setCameraZoomAndCenter(Activity a, GoogleMap map, Location l){
+    public static void setCameraZoomAndCenter(Activity a, GoogleMap map, Location l, boolean init){
 
         //do some version checking
         if (android.os.Build.VERSION.SDK_INT >= 23) {
@@ -194,7 +194,7 @@ public class Helpers {
         if(Constants.fakeLocation){
 
             map.setMyLocationEnabled(false);
-            latlng = Constants.AA_MIDTBY;
+            latlng = Constants.FAKELOCATION;
         }else{
             map.setMyLocationEnabled(true);
             if (l != null) {
@@ -205,7 +205,7 @@ public class Helpers {
                 l = LocationServices.FusedLocationApi.getLastLocation(
                         MainActivity.mGoogleApiClient);
                 if(l == null) {
-                    latlng = Constants.AA_MIDTBY;
+                    latlng = Constants.FAKELOCATION;
                 }else{
                     latlng = new LatLng(l.getLatitude(),l.getLongitude());
                 }
@@ -221,7 +221,7 @@ public class Helpers {
                 Log.i("has bearing", Float.toString(l.getBearing()));
                 CameraPosition cameraPosition = new CameraPosition.Builder()
                         .target(latlng)             // Sets the center of the map to current location
-                        .zoom(Helpers.getCameraZoomLevel())                   // Sets the zoom
+                        .zoom(init ?  map.getCameraPosition().zoom : Helpers.getCameraZoomLevel())                   // Sets the zoom
                         .bearing(l.getBearing()) // Sets the orientation of the camera to east
                         .tilt(0)                   // Sets the tilt of the camera to 0 degrees
                         .build();                   // Creates a CameraPosition from the builder
@@ -229,7 +229,7 @@ public class Helpers {
                 map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             } else {
                 //zoom to view
-                CameraPosition cameraPosition = new CameraPosition.Builder().target(latlng).zoom(Helpers.getCameraZoomLevel()).build();
+                CameraPosition cameraPosition = new CameraPosition.Builder().target(latlng).zoom(init ? map.getCameraPosition().zoom : Helpers.getCameraZoomLevel()).build();
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
                 map.moveCamera(cameraUpdate);
                 if(Constants.fakeLocation){
@@ -277,10 +277,11 @@ public class Helpers {
     public static void setPOIMap(Fragment f, Location l){
 
         Main_POIfragment frag = (Main_POIfragment) f;
-        //frag.updateLocation(l);
+        //frag.updateLocation(new LatLng(l.getLatitude(),l.getLongitude()));
         if(frag != null) {
             Constants.isMapBeingRedrawn = true;
-            frag.drawMap(POIs.getPois());
+            //frag.drawMap(POIs.getPois());
+            Helpers.setCameraZoomAndCenter(frag.getActivity(), frag.map,l, false);
         }
     }
 
