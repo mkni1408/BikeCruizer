@@ -155,8 +155,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void setContentView(){
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        //int defaultValue = R.id.nav_speed;
+        int view = sharedPref.getInt("LAST_VIEW", R.id.nav_speed);
 
-        displayView(R.id.nav_speed);
+        displayView(view);
     }
 
     public void displayView(int viewId) {
@@ -278,6 +281,10 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         displayView(id);
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt("LAST_VIEW", id);
+        editor.commit();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

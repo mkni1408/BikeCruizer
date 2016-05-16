@@ -36,8 +36,8 @@ public class PoiOverlayAdapter extends ArrayAdapter<Integer> {
         //ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
         //textView.setText(Integer.toString(values[position]));
         int[] staricon_ids = new int[] {R.id.icon2,R.id.icon3,R.id.icon4, R.id.icon5, R.id.icon6};
-        int[] idss = new int[] {R.drawable.ratings_shopping,R.drawable.ratings_bars,R.drawable.ratings_bars,
-                R.drawable.ratings_food, R.drawable.ratings_nature,R.drawable.ratings_nature};
+        int[] idss = new int[] {R.drawable.hamburger,R.drawable.glass,R.drawable.binoculars, R.drawable.glass,
+                R.drawable.tree, R.drawable.bank,R.drawable.bag, R.drawable.coffee_cup};
 
         Log.i("value", Integer.toString(position));
 
