@@ -335,7 +335,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         mGoogleApiClient.connect();
-        InterestPoints.fetchInterestPoints(new ProgressDialog(this),this);
+        //InterestPoints.fetchInterestPoints(new ProgressDialog(this),this);
         super.onStart();
     }
     @Override
