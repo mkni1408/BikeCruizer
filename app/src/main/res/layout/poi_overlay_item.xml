@@ -4,19 +4,30 @@
     android:layout_height="?android:attr/listPreferredItemHeight"
     android:padding="6dip" >
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentTop="true"
+        android:background="#000000" />
+    s
     <ImageView
         android:id="@+id/rating_main_icon"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginLeft="10dp"
         android:contentDescription="TODO"
+        android:paddingTop="1dp"
+        android:layout_centerVertical="true"
         android:src="@drawable/bike" />
 
     <LinearLayout
         android:id="@+id/ratingsIcons"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginLeft="80dp">
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="1dp"
+        android:layout_marginLeft="75dp"
+        android:paddingTop="1dp">
         <ImageView
             android:id="@+id/icon2"
             android:layout_width="30dp"

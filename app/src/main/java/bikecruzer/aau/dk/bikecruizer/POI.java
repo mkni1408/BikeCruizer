@@ -13,6 +13,7 @@ import com.google.maps.android.clustering.ClusterItem;
  * Created by michael on 17/04/16.
  */
 public class POI implements ClusterItem {
+    private int mId;
     private LatLng position;
     private String name;
     private Integer numOfPOI;
@@ -26,14 +27,16 @@ public class POI implements ClusterItem {
         numOfPOI = 0;
     }
 
-    public POI (String name, double lat, double lng, Integer numOfPOI,POIRatings ratings){
+    public POI (String name, double lat, double lng, Integer numOfPOI,POIRatings ratings, int id){
+        this.mId = id;
         this.position = new LatLng(lat,lng);
         this.name = name;
         this.numOfPOI = numOfPOI;
         this.ratings = ratings;
     }
 
-    public POI (String name, LatLng latLng, Integer numOfPOI, POIRatings ratings){
+    public POI (String name, LatLng latLng, Integer numOfPOI, POIRatings ratings, int id){
+        this.mId = id;
         this.position = latLng;
         this.name = name;
         this.numOfPOI = numOfPOI;
@@ -78,5 +81,8 @@ public class POI implements ClusterItem {
     public boolean getInThisPOI(){return  isInThisPOI;};
     public void setInThisPOI(boolean isIn){
         this.isInThisPOI = isIn;
+    }
+    public int getId(){
+        return this.mId;
     }
 }

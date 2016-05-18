@@ -51,7 +51,7 @@ public final class InterestPoints {
         p.hide();
         p = null;
 
-        ma.setContentView();
+        ma.setMainContentView();
         ma = null;
 
         //draw map by calling fragment method

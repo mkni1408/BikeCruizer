@@ -11,6 +11,8 @@ public class POIs {
     private static ArrayList<POI> pois = new ArrayList<POI>();
     private static ProgressDialog p = null;
     private static Main_POIfragment sf;
+    public static boolean fetching = false;
+    public static ArrayList<POI> walkedPOIS = new ArrayList<POI>();
     private POIs(){
 
     }
@@ -23,6 +25,18 @@ public class POIs {
         POIs.pois = pois;
     }
 
+    public static ArrayList<POI> getWalkedPOIS(){
+        return POIs.walkedPOIS;
+    }
+
+    public static void setWalkedPOIS (ArrayList<POI> pois){
+        POIs.walkedPOIS = pois;
+    }
+
+    public static void addWalkedPOIS(POI poi){
+        walkedPOIS.add(poi);
+    }
+
     public static void fetchPois (ProgressDialog p, Main_POIfragment f){
         sf = f;
         startFetchning(p);
@@ -31,6 +45,8 @@ public class POIs {
     private static void startFetchning (ProgressDialog b){
 
         p = b;
+        fetching = true;
+        setPois(new ArrayList<POI>());
 
         p.setTitle("Fetching POI's");
         p.setMessage("Wait...");
@@ -41,12 +57,17 @@ public class POIs {
     }
 
     public static void stopFetchning (){
+        fetching = false;
         //unset progressbar
-        p.hide();
-        p = null;
+        if(p != null) {
+            p.hide();
+            p = null;
+        }
+        if(sf != null){
 
-        sf.drawMap(pois);
-        sf = null;
+            sf.drawMap(pois);
+            sf = null;
+        }
 
         //draw map by calling fragment method
 

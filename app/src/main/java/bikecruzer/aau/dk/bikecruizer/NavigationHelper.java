@@ -23,7 +23,7 @@ public class NavigationHelper {
     //gets a navigationResult (if Any) from a list of interestpoints
     //radius: radius within where it should look
     public NavigationResult getNavigationResult(LatLng currentLocation, int radius){
-        if(Constants.fakeLocation){
+        if(Constants.fakeLocation || currentLocation == null){
             currentLocation = Constants.FAKELOCATION;
         }
 
@@ -40,7 +40,8 @@ public class NavigationHelper {
                     POIs.getPois().get(i).setInThisPOI(true);
                     dist = newdist;
                     index = i;
-                    return new NavigationResult(POIs.getPois().get(index).getName());
+                    return new NavigationResult(POIs.getPois().get(index).getName(),
+                            POIs.getPois().get(index).getId(), POIs.getPois().get(index));
                 }
                 //if we are leaving a poi and
                 if(newdist > 1 && POIs.getPois().get(i).getInThisPOI()){

@@ -13,4 +13,7 @@
     <item android:id="@+id/useMapTouch"
         android:icon="@drawable/bike"
         android:title="Use map touch" />
+    <item android:id="@+id/ratePOI"
+        android:icon="@drawable/bike"
+        android:title="Rate POI's" />
 </menu>

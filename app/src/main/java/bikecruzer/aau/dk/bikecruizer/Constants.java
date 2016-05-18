@@ -48,6 +48,7 @@ public final class Constants {
     public static int currentMarkerIcon = 0;
     public static boolean fakeLocation = false;
     public static boolean useMapTouch = false;
+    public static boolean ratePOIS = false;
     public static boolean isInteractingWithMap = true;
     public static ExecutorService excs = null;
     public static int navRadiusInMeters = 200; // meters

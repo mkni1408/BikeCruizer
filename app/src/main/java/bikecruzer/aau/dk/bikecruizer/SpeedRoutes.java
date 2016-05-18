@@ -43,11 +43,15 @@ public final class SpeedRoutes {
 
     public static void stopFetchning (){
         //unset progressbar
-        p.hide();
-        p = null;
+        if(p != null) {
+            p.hide();
+            p = null;
+        }
+        if(sf != null){
 
-        sf.drawMap(speedRoutes);
-        sf = null;
+            sf.drawMap(speedRoutes);
+            sf = null;
+        }
 
         //draw map by calling fragment method
 

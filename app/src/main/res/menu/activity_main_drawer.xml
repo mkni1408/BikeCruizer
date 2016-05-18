@@ -5,15 +5,15 @@
         <item
             android:id="@+id/nav_speed"
             android:icon="@mipmap/ic_menu_bike"
-            android:title="Speed" />
+            android:title="Speed Routes" />
         <item
             android:id="@+id/nav_volume"
             android:icon="@mipmap/ic_menu_speed"
-            android:title="Volume" />
+            android:title="Volume Routes" />
         <item
             android:id="@+id/nav_pointsofinterest"
             android:icon="@mipmap/ic_menu_poi"
-            android:title="Points of interest" />
+            android:title="Areas of interest" />
 
         <item
             android:id="@+id/nav_settings"

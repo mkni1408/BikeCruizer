@@ -42,11 +42,16 @@ public final class VolumeRoutes {
 
     public static void stopFetchning (){
         //unset progressbar
-        p.hide();
-        p = null;
+        if(p != null) {
+            p.hide();
+            p = null;
+        }
+        if(sf != null){
 
-        sf.drawMap(volumeRoutes);
-        sf = null;
+            sf.drawMap(volumeRoutes);
+            sf = null;
+        }
+
 
         //draw map by calling fragment method
 

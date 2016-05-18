@@ -113,10 +113,8 @@ public class Main_POIfragment extends android.app.Fragment implements OnMapReady
 
             }
         }
+        //check that it is not fetching already
 
-        ProgressDialog progressSpinner = new ProgressDialog(this.getActivity());
-
-        POIs.fetchPois(progressSpinner,this);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -210,14 +208,11 @@ public class Main_POIfragment extends android.app.Fragment implements OnMapReady
         //set zoomlevel
         Helpers.setCameraZoomAndCenter(this.getActivity(), map, l, mInitialized);
 
-        //listener to listen on markers
-        //googleMap.setOnMarkerClickListener(this);
-        //googleMap.setOnCameraChangeListener(this);
-
-        //IPFetcher fetcher = new IPFetcher();
-        //fetcher.fetch(this.map,this.getActivity());
-
-        //spinner.setVisibility(View.VISIBLE);
+        //fetch points
+        if(!POIs.fetching) {
+            ProgressDialog progressSpinner = new ProgressDialog(this.getActivity());
+            POIs.fetchPois(progressSpinner, this);
+        }
     }
 
     public void updateLocation(LatLng location) {
@@ -242,88 +237,61 @@ public class Main_POIfragment extends android.app.Fragment implements OnMapReady
 
     public void drawMap (ArrayList<POI> points){
 
+        Log.i("size",Integer.toString(points.size()));
+        ArrayList<POI> pointList = points;
         //this.map.clear();
-        if(points.size() > -1) {
-            this.addPointsToMap(points);
-        }else{
-            //progressSpinner.hide();
+        if(pointList.size() > 0 && !POIs.fetching) {
+            this.addPointsToMap(pointList);
+
+
         }
-        if(Constants.walkOrCycle > 2) {
-            //InterestPoints.drawIPstoMap(this.getActivity(), this.map);
-        }
-        //Helpers.setCameraZoomAndCenter(this.getActivity(), this.map, null);
     }
 
     public void addPointsToMap (ArrayList<POI> points){
 
-        //get and scale icon
-        Log.i("Points to draw", Integer.toString(points.size()));
+        if(map != null && this.getActivity() != null) {
+            mClusterManager = new ClusterManager<POI>(this.getActivity(), map);
+            mClusterManager.setRenderer(new CustomRenderer(this.getActivity(), map, mClusterManager));
 
-        mClusterManager = new ClusterManager<POI>(this.getActivity(), map);
-        mClusterManager.setRenderer(new CustomRenderer(this.getActivity(), map, mClusterManager));
+            map.setOnCameraChangeListener(mClusterManager);
+            map.setOnMarkerClickListener(mClusterManager);
 
-        map.setOnCameraChangeListener(mClusterManager);
-        map.setOnMarkerClickListener(mClusterManager);
-        mClusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<POI>() {
-            @Override
-            public boolean onClusterClick(Cluster<POI> cluster) {
-                //sString firstName = cluster.getItems().iterator().next().getName();
-                //Toast.makeText(getActivity(), cluster.getSize() + " (including " + firstName + ")", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        });
+            mClusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<POI>() {
+                @Override
+                public boolean onClusterClick(Cluster<POI> cluster) {
+                    //sString firstName = cluster.getItems().iterator().next().getName();
+                    //Toast.makeText(getActivity(), cluster.getSize() + " (including " + firstName + ")", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            });
 
-       /*map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                LayoutInflater layoutInflater = LayoutInflater.from( getActivity() );
-                ViewGroup root = (ViewGroup) getActivity().findViewById(R.id.nav_view);
-                FrameLayout f = ( FrameLayout )layoutInflater.inflate( R.layout.poi_overlay, root,
-                        false );
+            mClusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<POI>() {
+                @Override
+                public boolean onClusterItemClick(POI poi) {
+                    Dialog myDialog;
+                    myDialog = new Dialog(getActivity());
+                    myDialog.setContentView(R.layout.poi_overlay);
+                    myDialog.setCancelable(true);
 
-                root.getOverlay().add(f);
-                Dialog myDialog;
-                myDialog =  new Dialog(getActivity());
-                myDialog.setContentView(R.layout.poi_overlay);
-                myDialog.setCancelable(true);
-                myDialog.show();
-                return false;
-            }
-        });*/
+                    myDialog.setTitle(R.string.point_of_interest_ratings);
 
-        /*map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-            @Override
-            public void onCameraChange(CameraPosition cameraPosition) {
-
-                return;
-            }
-        });*/
-
-        mClusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<POI>() {
-            @Override
-            public boolean onClusterItemClick(POI poi) {
-                Dialog myDialog;
-                myDialog =  new Dialog(getActivity());
-                myDialog.setContentView(R.layout.poi_overlay);
-                myDialog.setCancelable(true);
-                myDialog.setTitle(R.string.point_of_interest_ratings);
-
-                ListView v = (ListView) myDialog.findViewById(R.id.ratingsListView);
-                v.setAdapter(new PoiOverlayAdapter(getActivity(),poi.getRatings().getRatingsArray()));
+                    ListView v = (ListView) myDialog.findViewById(R.id.ratingsListView);
+                    v.setAdapter(new PoiOverlayAdapter(getActivity(), poi.getRatings().getRatingsArray()));
 
 
-                myDialog.show();
-                return false;
-            }
-        });
-
-        mClusterManager.addItems(points);
+                    myDialog.show();
+                    return false;
+                }
+            });
+            mClusterManager.clearItems();
+            mClusterManager.addItems(points);
+        }
     }
 
 
     private GroundOverlay addcircleAroundMarker(int size, double lat, double lng) {
         // circle settings
-        int radiusM = size;
+        int radiusM = size*2;
         double latitude = lat;
         double longitude = lng;
         LatLng latLng = new LatLng(latitude,longitude);
@@ -372,7 +340,7 @@ public class Main_POIfragment extends android.app.Fragment implements OnMapReady
 
 
         protected void onBeforeClusterItemRendered(POI item, MarkerOptions markerOptions) {
-            markerOptions.title(item.getName());
+            //markerOptions.title(item.getName());
             super.onBeforeClusterItemRendered(item, markerOptions);
             item.setOverlay(addcircleAroundMarker(item.getNumPOI(), item.getPosition().latitude, item.getPosition().longitude));
         }
