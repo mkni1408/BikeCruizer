@@ -93,10 +93,6 @@ public class Main_Speedfragment extends Fragment implements OnMapReadyCallback, 
 
             }
         }
-        ProgressDialog progressSpinner = new ProgressDialog(this.getActivity());
-
-        SpeedRoutes.fetchSpeedRoutes(progressSpinner,this);
-
     }
 
     @Override
@@ -165,7 +161,11 @@ public class Main_Speedfragment extends Fragment implements OnMapReadyCallback, 
         googleMap.setOnMarkerClickListener(this);
         googleMap.setOnCameraChangeListener(this);
 
+        if(!SpeedRoutes.fetching) {
+            ProgressDialog progressSpinner = new ProgressDialog(this.getActivity());
 
+            SpeedRoutes.fetchSpeedRoutes(progressSpinner,this);
+        }
         //spinner.setVisibility(View.VISIBLE);
     }
 
@@ -248,6 +248,15 @@ public class Main_Speedfragment extends Fragment implements OnMapReadyCallback, 
             if (routes.size() > -1) {
                 this.excecuteRouteMapper(routes.size() - 1);
             } else {
+                //progressSpinner.hide();
+            }
+        }
+
+        if(routes.size() > 0 && !SpeedRoutes.fetching) {
+            //this.map.clear();
+            if(routes.size() > -1) {
+                this.excecuteRouteMapper(routes.size() - 1);
+            }else{
                 //progressSpinner.hide();
             }
         }

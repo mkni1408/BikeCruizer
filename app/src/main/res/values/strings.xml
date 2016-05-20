@@ -13,7 +13,7 @@
     <string name="hello_blank_poifragment">Hello blank poifragment</string>
 
 
-    <string name="google_app_id">AIzaSyAmcqloIM21bOsQUr6xACx28ZcrHNDszpI</string>
+    <string name="google_app_id">AIzaSyA76nRD24AG8jefcRyn2JSTiPFT424UiXM</string>
 
     <!-- Activity detection strings -->
     <string name="in_vehicle">In a vehicle</string>
@@ -30,4 +30,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_maps">Map</string>
     <string name="point_of_interest_ratings">Ratings</string>
+    <string name="google_api_key">AIzaSyA76nRD24AG8jefcRyn2JSTiPFT424UiXM</string>
+    <string name="title_activity_maps1">Map</string>
 </resources>

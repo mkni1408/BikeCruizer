@@ -92,10 +92,6 @@ public class Main_Volumefragment extends Fragment implements OnMapReadyCallback,
 
             }
         }
-
-        ProgressDialog progressSpinner = new ProgressDialog(this.getActivity());
-
-        VolumeRoutes.fetchVolumeRoutes(progressSpinner,this);
     }
 
     @Override
@@ -164,6 +160,13 @@ public class Main_Volumefragment extends Fragment implements OnMapReadyCallback,
         googleMap.setOnCameraChangeListener(this);
 
 
+        if(!VolumeRoutes.fetching) {
+
+            ProgressDialog progressSpinner = new ProgressDialog(this.getActivity());
+
+            VolumeRoutes.fetchVolumeRoutes(progressSpinner,this);
+        }
+
         //spinner.setVisibility(View.VISIBLE);
     }
 
@@ -231,38 +234,35 @@ public class Main_Volumefragment extends Fragment implements OnMapReadyCallback,
 
         mInitialized = true;
     }
-    public void executeVolumeMapper (Integer counter){
 
-        /*if(counter < 0){
-            progressSpinner.hide();
-        }else {
-            VolumeRouteMapper rm = new VolumeRouteMapper(activity, map, counter, this.routes.get(counter), this);
-            rm.execute();
-        }*/
-
-    }
 
 
     public void drawMap (ArrayList<VolumeRoute> routes){
 
-        this.map.clear();
-        if(routes.size() > -1) {
-            this.excecuteRouteMapper(routes.size() - 1);
-        }else{
-            //progressSpinner.hide();
+        if(routes.size() > 0 && !VolumeRoutes.fetching) {
+            //this.map.clear();
+            if(routes.size() > -1) {
+                this.executeVolumeMapper(routes.size() - 1);
+            }else{
+                //progressSpinner.hide();
+            }
         }
+
     }
 
-    public void excecuteRouteMapper (Integer counter){
+    public void executeVolumeMapper (Integer counter){
 
+        Log.i("counter", Integer.toString(counter));
         if(counter < 0){
             //progressSpinner.hide();
             if(Constants.walkOrCycle > 2) {
-                InterestPoints.drawIPstoMap(this.getActivity(), this.map);
+                //InterestPoints.drawIPstoMap(this.getActivity(), this.map);
             };
             Helpers.setCameraZoomAndCenter(this.getActivity(), this.map, null, false);
         }else {
             VolumeRouteMapper rm = new VolumeRouteMapper(VolumeRoutes.getVolumeRoutes().get(counter), this.getActivity(), map, counter, this);
+
+            Log.i("volume", Double.toString(VolumeRoutes.getVolumeRoutes().get(counter).getStartPosition().latitude));
             rm.execute();
         }
 

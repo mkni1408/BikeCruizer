@@ -48,7 +48,7 @@ public class POIs {
         fetching = true;
         setPois(new ArrayList<POI>());
 
-        p.setTitle("Fetching POI's");
+        p.setTitle("Fetching Areas of Interest");
         p.setMessage("Wait...");
         p.show();
 

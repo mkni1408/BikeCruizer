@@ -80,10 +80,10 @@ public class POIGenerator extends AsyncTask<String,Void,ArrayList<POI>> {
                 try {
                     JSONObject oneObject = jArray.getJSONObject(i);
 
-                    JSONObject jsonArr = oneObject.getJSONObject("ratings");
+                    //JSONObject jsonArr = oneObject.getJSONObject("ratings");
 
-                    POIRatings ratings = new POIRatings(jsonArr.getInt("dining"),jsonArr.getInt("barsandpubs"),
-                            jsonArr.getInt("attractions"),jsonArr.getInt("sights"),jsonArr.getInt("museums"), jsonArr.getInt("kids"));
+                    POIRatings ratings = new POIRatings(oneObject.getInt("dining"),oneObject.getInt("barsandpubs"),
+                            oneObject.getInt("attractions"),oneObject.getInt("sights"),oneObject.getInt("museums"), oneObject.getInt("cafe"));
 
                     // Pulling items from the array
                     POI newPoi = new POI(

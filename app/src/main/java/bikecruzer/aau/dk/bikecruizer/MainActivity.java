@@ -240,7 +240,16 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         //TextView tv = (TextView) findViewById(R.id.bikevswalktextview);
 
-        if(id == R.id.setWalk){
+        if(id == R.id.disableActivity){
+            if(Constants.disableActivityService){
+                Constants.disableActivityService = false;
+            }else{
+                Constants.disableActivityService = true;
+            }
+            Toast.makeText(this,Constants.disableActivityService ? "Disabling activity recognition" : "Enabling activity recognition", Toast.LENGTH_SHORT).show();
+        }
+        else if(id == R.id.setWalk){
+            Constants.disableActivityService = true;
             Constants.walkOrCycle = 2;
             //tv.setText("Walk mode");
             Helpers.updateMap(Constants.currentFragment,Constants.currentFragmentIndex,
@@ -248,6 +257,7 @@ public class MainActivity extends AppCompatActivity
             showBikeOverlay(false);
         }
         else if(id == R.id.setBike){
+            Constants.disableActivityService = true;
             Constants.walkOrCycle = 4;
             //tv.setText("Bike mode");
             Helpers.updateMap(Constants.currentFragment,Constants.currentFragmentIndex,
@@ -458,6 +468,14 @@ public class MainActivity extends AppCompatActivity
                         if(Constants.walkOrCycle > 2 && Constants.currentFragmentIndex != 2){
                             displayView(R.id.nav_pointsofinterest);
                         }
+
+                        if(Constants.fakeLocation) {
+                            if(location != null) {
+                                Constants.FAKELOCATION = new LatLng(location.getLatitude(), location.getLongitude());
+                                Helpers.setCameraZoomAndCenter(this, Helpers.getCurrentFragmentMap(), null, false);
+                            }
+                        }
+
                         if(location != null){
                             if(!Constants.isInteractingWithMap) {
                                 if(Constants.walkOrCycle > 2) {
@@ -468,6 +486,7 @@ public class MainActivity extends AppCompatActivity
                                         final MediaPlayer mp = MediaPlayer.create(this, R.raw.ding);
                                         mp.start();
                                     }
+
 
                                     for (int i = 0; i < POIs.getPois().size(); i++) {
                                         if(POIs.getPois().get(i).getInThisPOI()){
@@ -499,7 +518,7 @@ public class MainActivity extends AppCompatActivity
                                 }
                             }
                         }
-                        //Helpers.setCameraZoomAndCenter(this,);
+
                     }
 
     protected void stopLocationUpdates() {
@@ -526,6 +545,19 @@ public class MainActivity extends AppCompatActivity
         public void onReceive(Context context, Intent intent) {
             ArrayList<DetectedActivity> updatedActivities =
                     intent.getParcelableArrayListExtra(Constants.ACTIVITY_EXTRA);
+
+            DetectedActivity activity = Helpers.walkingOrCykeling(updatedActivities);
+
+            //will set screen if not walking, running or cyceling
+            if(Constants.disableActivityService) {
+                if (activity != null) {
+                    if (activity.getType() > 3) {
+                        Helpers.setMapToCycle();
+                    } else {
+                        Helpers.setMapToWalk();
+                    }
+                }
+            }
         }
     }
 

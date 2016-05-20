@@ -302,7 +302,7 @@ public class Main_POIfragment extends android.app.Fragment implements OnMapReady
         Bitmap bm = Bitmap.createBitmap(d, d, Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(bm);
         Paint p = new Paint();
-        p.setColor(0x55ffb3ec);
+        p.setColor(0x99ffb3ec);
         c.drawCircle(d/2, d/2, d/2, p);
 
         BitmapDescriptor bmD = BitmapDescriptorFactory.fromBitmap(bm);
@@ -341,6 +341,12 @@ public class Main_POIfragment extends android.app.Fragment implements OnMapReady
 
         protected void onBeforeClusterItemRendered(POI item, MarkerOptions markerOptions) {
             //markerOptions.title(item.getName());
+            Bitmap bitmap = Bitmap.createBitmap(50, 50, Bitmap.Config.ARGB_8888);
+
+            BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(bitmap);
+
+
+            markerOptions.icon(icon);
             super.onBeforeClusterItemRendered(item, markerOptions);
             item.setOverlay(addcircleAroundMarker(item.getNumPOI(), item.getPosition().latitude, item.getPosition().longitude));
         }

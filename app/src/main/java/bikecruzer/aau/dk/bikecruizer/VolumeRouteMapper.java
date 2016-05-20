@@ -111,26 +111,28 @@ public class VolumeRouteMapper extends AsyncTask<VolumeRoute,Void,ArrayList<Volu
     }
 
     public void drawPath(String result) {
-
-        try {
-            //Tranform the string into a json object
-            final JSONObject json = new JSONObject(result);
-            JSONArray routeArray = json.getJSONArray("routes");
-            JSONObject routes = routeArray.getJSONObject(0);
-            JSONObject overviewPolylines = routes.getJSONObject("overview_polyline");
-            String encodedString = overviewPolylines.getString("points");
-            List<LatLng> list = decodePoly(encodedString);
-            Polyline line = this.gmap.addPolyline(new PolylineOptions()
-                    .addAll(list)
-                    .width(10)
-                    .color(Helpers.volColorConverter(this.volRoute.getVolume()))//Google maps blue color
-                    .geodesic(true)
-            );
-                this.count --;
+        if(this.gmap != null) {
+            try {
+                //Tranform the string into a json object
+                final JSONObject json = new JSONObject(result);
+                JSONArray routeArray = json.getJSONArray("routes");
+                JSONObject routes = routeArray.getJSONObject(0);
+                JSONObject overviewPolylines = routes.getJSONObject("overview_polyline");
+                String encodedString = overviewPolylines.getString("points");
+                List<LatLng> list = decodePoly(encodedString);
+                Polyline line = this.gmap.addPolyline(new PolylineOptions()
+                        .addAll(list)
+                        .width(10)
+                        .color(Helpers.volColorConverter(this.volRoute.getVolume()))//Google maps blue color
+                        .geodesic(true)
+                );
+                this.count--;
+                Log.i("this count",Integer.toString(this.count));
                 this.context.executeVolumeMapper(this.count);
 
-        }
-        catch (JSONException e) {
+            } catch (JSONException e) {
+            }
+        }else{
 
         }
     }

@@ -43,9 +43,7 @@ public final class Constants {
     public static int walkOrCycle = 0; //0, 2, 4
     public static int currentFragmentIndex = 0; //0,1,2
     public static Fragment currentFragment = null;
-    public static boolean useMapCache = false;
     public static Marker currentMarker = null;
-    public static int currentMarkerIcon = 0;
     public static boolean fakeLocation = false;
     public static boolean useMapTouch = false;
     public static boolean ratePOIS = false;
@@ -55,6 +53,7 @@ public final class Constants {
     public static boolean isMapBeingRedrawn = false;
     public static float walkZoomLevel = 16f;
     public static float bikeZoomLevel = 18f;
+    public static boolean disableActivityService = false;
     /**
      * The desired time between activity detections. Larger values result in fewer activity
      * detections while improving battery life. A value of 0 results in activity detections at the

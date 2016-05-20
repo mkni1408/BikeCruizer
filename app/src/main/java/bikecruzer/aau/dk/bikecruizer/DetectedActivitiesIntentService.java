@@ -55,46 +55,8 @@ public class DetectedActivitiesIntentService extends IntentService {
         // 0 and 100.
         ArrayList<DetectedActivity> detectedActivities = (ArrayList) result.getProbableActivities();
 
-        DetectedActivity activity = this.walkingOrCykeling(result.getProbableActivities());
-
-        //will undim screen if not walking, running or cyceling
-        if(activity != null) {
-            if (activity.getType() > 3) {
-                //setMapToCycle();
-            } else {
-                //setMapToWalk();
-            }
-        }
-
         // Broadcast the list of detected activities.
         localIntent.putExtra(Constants.ACTIVITY_EXTRA, detectedActivities);
         LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent);
-    }
-
-    public void setMapToWalk(){
-        Log.i("Updated activity"," You are now walking");
-        Constants.walkOrCycle = 2;
-    };
-    public void setMapToCycle(){
-        Log.i("Updated activity"," You are now on bike");
-        Constants.walkOrCycle = 4;
-    };
-
-    private DetectedActivity walkingOrCykeling(List<DetectedActivity> probableActivities) {
-        DetectedActivity myActivity = null;
-        int confidence = 0;
-        for (DetectedActivity activity : probableActivities) {
-            //if different than these - continue
-            if (activity.getType() != DetectedActivity.STILL
-                    && activity.getType() != DetectedActivity.WALKING
-                    && activity.getType() != DetectedActivity.RUNNING
-                    && activity.getType() != DetectedActivity.WALKING)
-                continue;
-            //else we look at confidence
-            if (activity.getConfidence() > confidence)
-                myActivity = activity;
-        }
-
-        return myActivity;
     }
 }

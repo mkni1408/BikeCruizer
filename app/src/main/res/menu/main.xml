@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/disableActivity"
+        android:icon="@drawable/walk"
+        android:title="[DEMO] Disable Activity Recognition"/>
     <item android:id="@+id/setWalk"
         android:icon="@drawable/walk"
-        android:title="Set walk"/>
+        android:title="[DEMO] Simulate walk"/>
     <item android:id="@+id/setBike"
         android:icon="@drawable/bike"
-        android:title="Set bike" />
+        android:title="[DEMO] Simulate bike" />
     <item android:id="@+id/fakeLocation"
         android:icon="@drawable/bike"
-        android:title="Fake location" />
+        android:title="[DEMO] Simulate location" />
     <item android:id="@+id/useMapTouch"
         android:icon="@drawable/bike"
-        android:title="Use map touch" />
+        android:title="[DEMO] Simulate map touch location" />
     <item android:id="@+id/ratePOI"
         android:icon="@drawable/bike"
-        android:title="Rate POI's" />
+        android:title="[DEMO] Simulate Rate POI's (requires walk)" />
 </menu>

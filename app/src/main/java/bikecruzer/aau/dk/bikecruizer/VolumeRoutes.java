@@ -11,6 +11,7 @@ public final class VolumeRoutes {
     private static ArrayList<VolumeRoute> volumeRoutes = new ArrayList<VolumeRoute>();
     private static ProgressDialog p = null;
     private static Main_Volumefragment sf;
+    public static boolean fetching = false;
     private VolumeRoutes(){
 
     }
@@ -31,7 +32,7 @@ public final class VolumeRoutes {
     private static void startFetchning (ProgressDialog b){
 
         p = b;
-
+        fetching = true;
         p.setTitle("Fetching routes");
         p.setMessage("Wait...");
         p.show();
@@ -41,6 +42,7 @@ public final class VolumeRoutes {
     }
 
     public static void stopFetchning (){
+        fetching = false;
         //unset progressbar
         if(p != null) {
             p.hide();

@@ -12,6 +12,7 @@ public final class SpeedRoutes {
     private static ArrayList<SpeedRoute> speedRoutes = new ArrayList<SpeedRoute>();
     private static ProgressDialog p = null;
     private static Main_Speedfragment sf;
+    public static boolean fetching = false;
     private SpeedRoutes(){
 
     }
@@ -32,7 +33,7 @@ public final class SpeedRoutes {
     private static void startFetchning (ProgressDialog b){
 
         p = b;
-
+        fetching = true;
         p.setTitle("Fetching routes");
         p.setMessage("Wait...");
         p.show();
@@ -42,6 +43,7 @@ public final class SpeedRoutes {
     }
 
     public static void stopFetchning (){
+        fetching = false;
         //unset progressbar
         if(p != null) {
             p.hide();
@@ -51,6 +53,7 @@ public final class SpeedRoutes {
 
             sf.drawMap(speedRoutes);
             sf = null;
+
         }
 
         //draw map by calling fragment method

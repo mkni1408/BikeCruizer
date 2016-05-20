@@ -13,6 +13,7 @@ import android.os.SystemClock;
 import android.util.Log;
 
 import com.google.android.gms.appdatasearch.DocumentContents;
+import com.google.android.gms.location.DetectedActivity;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -25,6 +26,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.text.DecimalFormat;
+import java.util.List;
 
 /**
  * Created by michael on 29/04/16.
@@ -178,6 +180,26 @@ public class Helpers {
         }
     }
 
+    public static GoogleMap getCurrentFragmentMap(){
+        if(Constants.currentFragment.getClass().getSimpleName().equals("Main_POIfragment")){
+            Main_POIfragment mp = (Main_POIfragment)Constants.currentFragment;
+            return mp.map;
+
+        }
+        if(Constants.currentFragment.getClass().getSimpleName().equals("Main_Speedfragment")){
+            Main_Speedfragment mp = (Main_Speedfragment)Constants.currentFragment;
+            return mp.map;
+        }
+        if(Constants.currentFragment.getClass().getSimpleName().equals("Main_Volumefragment")){
+            Main_Volumefragment mp = (Main_Volumefragment)Constants.currentFragment;
+            return mp.map;
+        }
+        return null;
+    }
+
+
+
+
     public static void setCameraZoomAndCenter(Activity a, GoogleMap map, Location l, boolean init){
 
         //do some version checking
@@ -324,6 +346,36 @@ public class Helpers {
 
         return;
     }
+
+    public static DetectedActivity walkingOrCykeling(List<DetectedActivity> probableActivities) {
+        DetectedActivity myActivity = null;
+        int confidence = 0;
+        for (DetectedActivity activity : probableActivities) {
+            //if different than these - continue
+            if (activity.getType() != DetectedActivity.STILL
+                    && activity.getType() != DetectedActivity.WALKING
+                    && activity.getType() != DetectedActivity.RUNNING
+                    && activity.getType() != DetectedActivity.WALKING)
+                continue;
+            //else we look at confidence
+            if (activity.getConfidence() > confidence)
+                myActivity = activity;
+        }
+
+        return myActivity;
+    }
+
+    public static void setMapToWalk(){
+        Log.i("Updated activity"," You are now walking");
+        Constants.walkOrCycle = 2;
+        MainActivity.showBikeOverlay(false);
+    };
+    public static void setMapToCycle(){
+        Log.i("Updated activity"," You are now on bike");
+        Constants.walkOrCycle = 4;
+        MainActivity.showBikeOverlay(true);
+
+    };
 
     public static Double getRadius(GoogleMap map){
         //zoom to view

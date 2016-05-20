@@ -111,26 +111,26 @@ public class SpeedRouteMapper extends AsyncTask<String,Void,SpeedRoute> {
     }
 
     public void drawPath(String  result) {
-
-        try {
-            //Tranform the string into a json object
-            final JSONObject json = new JSONObject(result);
-            JSONArray routeArray = json.getJSONArray("routes");
-            JSONObject routes = routeArray.getJSONObject(0);
-            JSONObject overviewPolylines = routes.getJSONObject("overview_polyline");
-            String encodedString = overviewPolylines.getString("points");
-            List<LatLng> list = decodePoly(encodedString);
-            Polyline line = this.gmap.addPolyline(new PolylineOptions()
-                    .addAll(list)
-                    .width(10)
-                    .color(Helpers.speedColorConverter(this.speedRoute.getSpeed()))//Google maps blue color
-                    .geodesic(true)
-            );
+        if(this.gmap != null) {
+            try {
+                //Tranform the string into a json object
+                final JSONObject json = new JSONObject(result);
+                JSONArray routeArray = json.getJSONArray("routes");
+                JSONObject routes = routeArray.getJSONObject(0);
+                JSONObject overviewPolylines = routes.getJSONObject("overview_polyline");
+                String encodedString = overviewPolylines.getString("points");
+                List<LatLng> list = decodePoly(encodedString);
+                Polyline line = this.gmap.addPolyline(new PolylineOptions()
+                        .addAll(list)
+                        .width(10)
+                        .color(Helpers.speedColorConverter(this.speedRoute.getSpeed()))//Google maps blue color
+                        .geodesic(true)
+                );
                 this.counter--;
                 this.context.excecuteRouteMapper(this.counter);
-        }
-        catch (JSONException e) {
+            } catch (JSONException e) {
 
+            }
         }
     }
 
