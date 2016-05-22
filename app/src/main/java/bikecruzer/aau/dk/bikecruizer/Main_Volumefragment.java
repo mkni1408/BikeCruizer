@@ -47,7 +47,7 @@ public class Main_Volumefragment extends Fragment implements OnMapReadyCallback,
     public GoogleMap map = null;
     private OnFragmentInteractionListener mListener;
     private VolumeGenerator vgen = new VolumeGenerator();
-    private boolean mInitialized = false;
+    public boolean mInitialized = false;
 
     public Main_Volumefragment() {
         // Required empty public constructor

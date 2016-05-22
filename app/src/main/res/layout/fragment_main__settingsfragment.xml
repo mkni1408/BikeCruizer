@@ -10,7 +10,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/wallet_dim_foreground_holo_dark">
+        android:background="@color/wallet_holo_blue_light">
 
 
         <TextView

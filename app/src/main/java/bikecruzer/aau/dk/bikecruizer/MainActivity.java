@@ -15,9 +15,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
@@ -34,16 +32,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.drive.Drive;
@@ -51,22 +44,10 @@ import com.google.android.gms.location.ActivityRecognition;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.location.ActivityRecognition;
-import com.google.android.gms.location.ActivityRecognitionApi;
 import com.google.android.gms.location.DetectedActivity;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
-
-import bikecruzer.aau.dk.bikecruizer.Adapters.PoiOverlayAdapter;
-import bikecruzer.aau.dk.bikecruizer.Main_Speedfragment;
-import bikecruzer.aau.dk.bikecruizer.Main_Volumefragment;
-import bikecruzer.aau.dk.bikecruizer.Main_POIfragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -148,7 +129,7 @@ public class MainActivity extends AppCompatActivity
             RelativeLayout l = (RelativeLayout) mActivity.findViewById(R.id.navigationOverlay);
             l.setVisibility(show ? View.VISIBLE : View.GONE);
 
-            if (show && Constants.fakeLocation) {
+            if ((show && Constants.fakeLocation)||(show && Constants.disableActivityService)) {
                 l.setOnTouchListener(new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -167,7 +148,7 @@ public class MainActivity extends AppCompatActivity
         int view = sharedPref.getInt("LAST_VIEW", R.id.nav_speed);
 
 
-        Log.i("navigation",Integer.toString(view));
+        //Log.i("navigation",Integer.toString(view));
 
         displayView(view);
     }
@@ -254,6 +235,14 @@ public class MainActivity extends AppCompatActivity
             //tv.setText("Walk mode");
             Helpers.updateMap(Constants.currentFragment,Constants.currentFragmentIndex,
                     null);
+
+
+            for (int i = 0; i < POIs.getPois().size(); i++) {
+                if(POIs.getPois().get(i).getInThisPOI()){
+                    POIs.getPois().get(i).setInThisPOI(false);
+                }
+            }
+
             showBikeOverlay(false);
         }
         else if(id == R.id.setBike){
@@ -308,7 +297,7 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putInt("LAST_VIEW", id);
         editor.commit();
-        Log.i("navigation committed",Integer.toString(id));
+        //Log.i("navigation committed",Integer.toString(id));
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -369,7 +358,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onConnected(Bundle connectionHint) {
 
-        Log.i(TAG, "Connected to GoogleApiClient");
+        //Log.i(TAG, "Connected to GoogleApiClient");
         if (android.os.Build.VERSION.SDK_INT >= 23) {
             if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                     && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -465,6 +454,13 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public void onLocationChanged(Location location) {
 
+                        Log.i("Location Changed", "...");
+                        if(location != null) {
+                            Log.i("Lat", Double.toString(location.getLatitude()));
+                            Log.i("Lng", Double.toString(location.getLongitude()));
+                            Log.i("Interaction", Constants.isInteractingWithMap ? "yes" : "no");
+                        }
+
                         if(Constants.walkOrCycle > 2 && Constants.currentFragmentIndex != 2){
                             displayView(R.id.nav_pointsofinterest);
                         }
@@ -474,7 +470,13 @@ public class MainActivity extends AppCompatActivity
                                 Constants.FAKELOCATION = new LatLng(location.getLatitude(), location.getLongitude());
                                 Helpers.setCameraZoomAndCenter(this, Helpers.getCurrentFragmentMap(), null, false);
                             }
+                        }else{
+                            if(!Helpers.getCurrentFragmentInit()) {
+                                Helpers.setCameraZoomAndCenter(this, Helpers.getCurrentFragmentMap(), location, false);
+                                Log.i("initializing map", "");
+                            }
                         }
+
 
                         if(location != null){
                             if(!Constants.isInteractingWithMap) {
@@ -494,7 +496,6 @@ public class MainActivity extends AppCompatActivity
                                     }
                                 }
                                 if(Constants.walkOrCycle < 4) {
-                                    Log.i("Walking about", ".....");
 
                                     NavigationHelper h = new NavigationHelper(POIs.getPois());
                                     NavigationResult result = h.getNavigationResult(new LatLng(location.getLatitude(), location.getLongitude()), Constants.navRadiusInMeters);
@@ -507,7 +508,7 @@ public class MainActivity extends AppCompatActivity
                                             }
                                         }
                                         if(!found){
-                                            Log.i("Adding Rating poi", result.getmPOI().getName());
+                                            //Log.i("Adding Rating poi", result.getmPOI().getName());
                                             POIs.addWalkedPOIS(result.getmPOI());
                                         }
                                     }
@@ -549,7 +550,7 @@ public class MainActivity extends AppCompatActivity
             DetectedActivity activity = Helpers.walkingOrCykeling(updatedActivities);
 
             //will set screen if not walking, running or cyceling
-            if(Constants.disableActivityService) {
+            if(!Constants.disableActivityService) {
                 if (activity != null) {
                     if (activity.getType() > 3) {
                         Helpers.setMapToCycle();

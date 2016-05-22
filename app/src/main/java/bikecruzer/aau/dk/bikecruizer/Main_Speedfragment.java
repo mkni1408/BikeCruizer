@@ -47,7 +47,7 @@ public class Main_Speedfragment extends Fragment implements OnMapReadyCallback, 
     public GoogleMap map = null;
     private OnFragmentInteractionListener mListener;
     //private SpeedGenerator sgen = new SpeedGenerator();
-    private boolean mInitialized = false;
+    public boolean mInitialized = false;
 
     public Main_Speedfragment() {
         // Required empty public constructor
@@ -227,7 +227,7 @@ public class Main_Speedfragment extends Fragment implements OnMapReadyCallback, 
 
         Constants.isMapBeingRedrawn = false;
 
-        mInitialized = true;
+        //mInitialized = true;
     }
 
     public void updateLocation(LatLng location) {

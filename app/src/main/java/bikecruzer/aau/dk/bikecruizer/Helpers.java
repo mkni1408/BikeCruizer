@@ -181,6 +181,7 @@ public class Helpers {
     }
 
     public static GoogleMap getCurrentFragmentMap(){
+        if(Constants.currentFragment == null){ return null; }
         if(Constants.currentFragment.getClass().getSimpleName().equals("Main_POIfragment")){
             Main_POIfragment mp = (Main_POIfragment)Constants.currentFragment;
             return mp.map;
@@ -195,6 +196,24 @@ public class Helpers {
             return mp.map;
         }
         return null;
+    }
+
+    public static boolean getCurrentFragmentInit(){
+        if(Constants.currentFragment == null){ return true; }
+        if(Constants.currentFragment.getClass().getSimpleName().equals("Main_POIfragment")){
+            Main_POIfragment mp = (Main_POIfragment)Constants.currentFragment;
+            return mp.mInitialized;
+
+        }
+        if(Constants.currentFragment.getClass().getSimpleName().equals("Main_Speedfragment")){
+            Main_Speedfragment mp = (Main_Speedfragment)Constants.currentFragment;
+            return mp.mInitialized;
+        }
+        if(Constants.currentFragment.getClass().getSimpleName().equals("Main_Volumefragment")){
+            Main_Volumefragment mp = (Main_Volumefragment)Constants.currentFragment;
+            return mp.mInitialized;
+        }
+        return true;
     }
 
 

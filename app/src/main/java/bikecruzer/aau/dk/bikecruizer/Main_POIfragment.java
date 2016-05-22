@@ -26,6 +26,7 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -52,7 +53,7 @@ public class Main_POIfragment extends android.app.Fragment implements OnMapReady
     // TODO: Rename parameter arguments, choose names that match
     private OnFragmentInteractionListener mListener;
     public GoogleMap map = null;
-    private boolean mInitialized = false;
+    public boolean mInitialized = false;
     private ClusterManager<POI> mClusterManager;
 
     public Main_POIfragment() {
@@ -169,7 +170,7 @@ public class Main_POIfragment extends android.app.Fragment implements OnMapReady
 
         Helpers.setCameraZoomAndCenter(this.getActivity(),map,l,mInitialized);
 
-        mInitialized = true;
+        //mInitialized = true;
         googleMap.setMyLocationEnabled(true);
 
         googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
@@ -232,6 +233,7 @@ public class Main_POIfragment extends android.app.Fragment implements OnMapReady
         }
 
         Constants.isMapBeingRedrawn = false;
+
         mInitialized = true;
     }*/
 
@@ -255,6 +257,22 @@ public class Main_POIfragment extends android.app.Fragment implements OnMapReady
 
             map.setOnCameraChangeListener(mClusterManager);
             map.setOnMarkerClickListener(mClusterManager);
+            map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+
+                @Override
+                public void onCameraChange(CameraPosition cameraPosition) {
+                    mClusterManager.onCameraChange(cameraPosition);
+
+                    if(!Constants.isMapBeingRedrawn) {
+                        Constants.startInteractionWithMap();
+                    }
+
+                    Constants.isMapBeingRedrawn = false;
+
+                    mInitialized = true;
+
+                }
+            });
 
             mClusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<POI>() {
                 @Override
