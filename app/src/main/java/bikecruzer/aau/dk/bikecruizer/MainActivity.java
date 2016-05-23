@@ -467,7 +467,7 @@ public class MainActivity extends AppCompatActivity
 
                         if(Constants.fakeLocation) {
                             if(location != null) {
-                                Constants.FAKELOCATION = new LatLng(location.getLatitude(), location.getLongitude());
+                                //Constants.FAKELOCATION = new LatLng(location.getLatitude(), location.getLongitude());
                                 Helpers.setCameraZoomAndCenter(this, Helpers.getCurrentFragmentMap(), null, false);
                             }
                         }else{
